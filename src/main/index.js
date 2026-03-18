@@ -1,6 +1,7 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const fs = require('fs')
+try { require('dotenv').config() } catch (e) {}
 const { registerIpcHandlers } = require('./ipc')
 
 app.whenReady().then(() => {

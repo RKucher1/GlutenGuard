@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently \"vite\" \"electron .\"",
     "build": "vite build && electron-builder",
-    "start": "electron ."
+    "start": "electron .",
+    "test": "node --test 'test/**/*.test.js' 'test/**/*.test.mjs'"
   },
   "repository": {
     "type": "git",
@@ -16,11 +17,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
     "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.4.27",
     "better-sqlite3": "^12.8.0",
     "concurrently": "^9.2.1",
+    "dotenv": "^16.0.0",
     "electron": "^28.3.3",
+    "googleapis": "^144.0.0",
     "postcss": "^8.5.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
