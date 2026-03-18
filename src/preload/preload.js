@@ -10,6 +10,7 @@ const ALLOWED_CHANNELS = [
   'settings:get', 'settings:set', 'settings:getAll',
   'learning:recordEvent', 'learning:getContext',
   'activity:record',
+  'profile:save', 'profile:get', 'profile:getContext', 'profile:isComplete',
 ]
 
 // Legacy invoke pattern (used by existing renderer code)
@@ -74,5 +75,11 @@ contextBridge.exposeInMainWorld('api', {
   },
   activity: {
     record: () => ipcRenderer.invoke('activity:record'),
+  },
+  profile: {
+    save: (profile) => ipcRenderer.invoke('profile:save', { profile }),
+    get: () => ipcRenderer.invoke('profile:get'),
+    getContext: () => ipcRenderer.invoke('profile:getContext'),
+    isComplete: () => ipcRenderer.invoke('profile:isComplete'),
   },
 })

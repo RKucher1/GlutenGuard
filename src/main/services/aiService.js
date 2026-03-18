@@ -1,6 +1,16 @@
 const fs = require('fs')
 const path = require('path')
 
+function getUserProfile() {
+  try {
+    const userProfile = require('../db/userProfile')
+    const profile = userProfile.get()
+    return userProfile.toPromptContext(profile)
+  } catch {
+    return 'No personal profile provided.'
+  }
+}
+
 function loadPrompt(name) {
   const promptPath = path.join(__dirname, '../prompts', `${name}.md`)
   return fs.readFileSync(promptPath, 'utf8')
@@ -39,6 +49,7 @@ async function replanDay(currentSchedule, currentTime, completedBlocks) {
     CURRENT_SCHEDULE: currentSchedule,
     CURRENT_TIME: currentTime,
     COMPLETED_BLOCKS: completedBlocks,
+    USER_PROFILE: getUserProfile(),
   })
   const response = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
@@ -55,6 +66,7 @@ async function planWeek(scheduleTemplate, existingMeetings, userRequest) {
     SCHEDULE_TEMPLATE: scheduleTemplate,
     EXISTING_MEETINGS: existingMeetings,
     USER_REQUEST: userRequest,
+    USER_PROFILE: getUserProfile(),
   })
   const response = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
@@ -75,6 +87,7 @@ async function chat(todaySchedule, weekMeetings, userMessage, history, completed
     CURRENT_SCHEDULE: todaySchedule,
     WEEK_MEETINGS: weekMeetings,
     COMPLETED_BLOCKS: completedBlocks || [],
+    USER_PROFILE: getUserProfile(),
     LEARNING_CONTEXT: learningContext || 'No learning data yet.',
   })
 
@@ -101,6 +114,7 @@ async function morningBriefing(userFocus, scheduleTemplate, gcalEvents, completi
     USER_FOCUS: userFocus,
     TODAY: today,
     DAY_OF_WEEK: dayOfWeek,
+    USER_PROFILE: getUserProfile(),
     SCHEDULE_TEMPLATE: scheduleTemplate,
     GCAL_EVENTS: gcalEvents || [],
     COMPLETION_HISTORY: completionHistory || [],

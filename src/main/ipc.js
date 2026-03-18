@@ -4,6 +4,7 @@ const templates = require('./db/templates')
 const meetings = require('./db/meetings')
 const completionStats = require('./db/completionStats')
 const settingsDb = require('./db/settingsDb')
+const userProfile = require('./db/userProfile')
 const { generateWeek } = require('./services/scheduler')
 const { detectConflicts } = require('./services/conflictDetector')
 const aiService = require('./services/aiService')
@@ -213,6 +214,26 @@ function registerIpcHandlers() {
   ipcMain.handle('activity:record', wrap(async () => {
     activityMonitor.recordActivity()
     return { recorded: true }
+  }))
+
+  // ── User Profile ──────────────────────────────────────────────────────
+  ipcMain.handle('profile:save', wrap(async (e, args) => {
+    userProfile.save(args.profile)
+    return { saved: true }
+  }))
+
+  ipcMain.handle('profile:get', wrap(async () => {
+    return userProfile.get()
+  }))
+
+  ipcMain.handle('profile:getContext', wrap(async () => {
+    const profile = userProfile.get()
+    return userProfile.toPromptContext(profile)
+  }))
+
+  ipcMain.handle('profile:isComplete', wrap(async () => {
+    const val = settingsDb.get('onboarding_complete')
+    return { complete: val === 'true' }
   }))
 
   // Start activity monitor

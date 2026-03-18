@@ -9,6 +9,7 @@ import Sidebar from './components/layout/Sidebar'
 import TopBar from './components/layout/TopBar'
 import ChatPanel from './components/ChatPanel'
 import MorningBriefing from './components/MorningBriefing'
+import Onboarding from './components/Onboarding'
 import useScheduleStore from './store/useScheduleStore'
 import './index.css'
 
@@ -45,14 +46,22 @@ function shouldShowMorningBriefing(blocks) {
 function App() {
   const [chatOpen, setChatOpen] = useState(false)
   const [showBriefing, setShowBriefing] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   const { blocks, selectedDate, goNextDay, goPrevDay, setDate } = useScheduleStore()
 
-  // Morning briefing trigger
+  // Check first-launch onboarding
   useEffect(() => {
-    if (blocks.length > 0 && shouldShowMorningBriefing(blocks)) {
+    window.api?.profile?.isComplete().then(res => {
+      if (res?.data?.complete === false) setShowOnboarding(true)
+    }).catch(() => {})
+  }, [])
+
+  // Morning briefing trigger — only after onboarding is done
+  useEffect(() => {
+    if (!showOnboarding && blocks.length > 0 && shouldShowMorningBriefing(blocks)) {
       setShowBriefing(true)
     }
-  }, [blocks])
+  }, [blocks, showOnboarding])
 
   // Record stats when navigating away from a day
   const prevDateRef = React.useRef(selectedDate)
@@ -104,7 +113,13 @@ function App() {
         }}
       />
 
-      {showBriefing && (
+      {showOnboarding && (
+        <Onboarding
+          onComplete={() => setShowOnboarding(false)}
+        />
+      )}
+
+      {showBriefing && !showOnboarding && (
         <MorningBriefing
           onDismiss={() => setShowBriefing(false)}
           onApply={() => {

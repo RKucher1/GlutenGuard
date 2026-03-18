@@ -6,9 +6,12 @@ The user wants to plan their upcoming week. Their fixed daily template is:
 Existing meetings already scheduled for next week:
 {{EXISTING_MEETINGS}}
 
+Personal profile (recurring life commitments to protect):
+{{USER_PROFILE}}
+
 User request: {{USER_REQUEST}}
 
-Generate a week plan that works around existing meetings and respects the template structure.
+Generate a week plan that works around existing meetings, respects the template structure, and protects the user's recurring personal commitments (exercise, dog walks, meal times, etc.).
 
 Respond ONLY with valid JSON in this exact format:
 {
