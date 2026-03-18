@@ -38,8 +38,16 @@ function parseJSON(text) {
 }
 
 async function getClient() {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new Error('ANTHROPIC_API_KEY is not set. Add it to your .env file at the project root.')
+  }
   const Anthropic = require('@anthropic-ai/sdk')
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+}
+
+function safeContent(response) {
+  if (!response?.content?.length) throw new Error('AI returned empty response')
+  return response.content[0].text
 }
 
 async function replanDay(currentSchedule, currentTime, completedBlocks) {
@@ -56,7 +64,7 @@ async function replanDay(currentSchedule, currentTime, completedBlocks) {
     max_tokens: 1000,
     messages: [{ role: 'user', content: prompt }],
   })
-  return parseJSON(response.content[0].text)
+  return parseJSON(safeContent(response))
 }
 
 async function planWeek(scheduleTemplate, existingMeetings, userRequest) {
@@ -73,7 +81,7 @@ async function planWeek(scheduleTemplate, existingMeetings, userRequest) {
     max_tokens: 1000,
     messages: [{ role: 'user', content: prompt }],
   })
-  return parseJSON(response.content[0].text)
+  return parseJSON(safeContent(response))
 }
 
 async function chat(todaySchedule, weekMeetings, userMessage, history, completedBlocks, learningContext) {
@@ -102,7 +110,7 @@ async function chat(todaySchedule, weekMeetings, userMessage, history, completed
     system: systemPrompt,
     messages,
   })
-  return parseJSON(response.content[0].text)
+  return parseJSON(safeContent(response))
 }
 
 async function morningBriefing(userFocus, scheduleTemplate, gcalEvents, completionHistory, learningContext) {
@@ -125,7 +133,7 @@ async function morningBriefing(userFocus, scheduleTemplate, gcalEvents, completi
     max_tokens: 1500,
     messages: [{ role: 'user', content: prompt }],
   })
-  return parseJSON(response.content[0].text)
+  return parseJSON(safeContent(response))
 }
 
 module.exports = { replanDay, planWeek, chat, morningBriefing }

@@ -65,15 +65,13 @@ export default function ChatPanel({ isOpen, onToggle, onApplied }) {
 
   // Listen for open-chat-panel from main (inactivity nudge)
   useEffect(() => {
-    if (window.electronAPI?.on) {
-      window.electronAPI.on('open-chat-panel', (event, msg) => {
-        onToggle(true)
-        if (msg) {
-          setMode(0)
-          setInput(msg)
-        }
-      })
+    if (!window.electronAPI?.on) return
+    const handler = (_event, msg) => {
+      onToggle(true)
+      if (msg) { setMode(0); setInput(msg) }
     }
+    window.electronAPI.on('open-chat-panel', handler)
+    return () => window.electronAPI.removeListener?.('open-chat-panel', handler)
   }, [onToggle])
 
   const getContext = async () => {

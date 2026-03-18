@@ -50,19 +50,22 @@ async function getEventsForWeek(mondayDate) {
     orderBy: 'startTime',
   })
 
-  return (res.data.items || []).map(event => ({
-    gcal_event_id: event.id,
-    title: event.summary || 'Untitled',
-    date: (event.start.dateTime || event.start.date).slice(0, 10),
-    start_time: event.start.dateTime
-      ? new Date(event.start.dateTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
-      : '09:00',
-    end_time: event.end.dateTime
-      ? new Date(event.end.dateTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
-      : '10:00',
-    description: event.description || '',
-    source: 'gcal',
-  }))
+  return (res.data.items || []).map(event => {
+    const isAllDay = !event.start.dateTime
+    return {
+      gcal_event_id: event.id,
+      title: event.summary || 'Untitled',
+      date: (event.start.dateTime || event.start.date).slice(0, 10),
+      start_time: isAllDay
+        ? '00:00'
+        : new Date(event.start.dateTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+      end_time: isAllDay
+        ? '23:59'
+        : new Date(event.end.dateTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+      description: (isAllDay ? '[All-day] ' : '') + (event.description || ''),
+      source: 'gcal',
+    }
+  })
 }
 
 async function syncToLocal(mondayDate) {

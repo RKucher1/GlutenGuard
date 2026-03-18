@@ -111,7 +111,7 @@ function registerIpcHandlers() {
   ipcMain.handle('ai:replanDay', wrap(async (e, args) => {
     activityMonitor.recordActivity()
     const result = await aiService.replanDay(args.schedule, args.currentTime, args.completedBlocks)
-    learningService.recordEvent({ event_type: 'ai_applied', ai_suggestion_type: 'replan', applied: 0 })
+    learningService.recordEvent({ event_type: 'ai_suggestion', ai_suggestion_type: 'replan', applied: 0 })
     return result
   }))
 
@@ -148,6 +148,7 @@ function registerIpcHandlers() {
         meetings.create(m)
       }
     }
+    learningService.recordEvent({ event_type: 'ai_applied', ai_suggestion_type: 'changes', applied: 1 })
     // Reschedule notifications
     const today = new Date().toISOString().slice(0, 10)
     const todayBlocks = blocks.getByDate(today)

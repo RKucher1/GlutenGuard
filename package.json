@@ -7,7 +7,7 @@
     "dev": "concurrently \"vite\" \"electron .\"",
     "build": "vite build && electron-builder",
     "start": "electron .",
-    "test": "node --test test/conflictDetector.test.js"
+    "test": "node --test 'test/**/*.test.js' 'test/**/*.test.mjs'"
   },
   "repository": {
     "type": "git",

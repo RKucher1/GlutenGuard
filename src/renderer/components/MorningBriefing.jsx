@@ -62,8 +62,12 @@ export default function MorningBriefing({ onDismiss, onApply }) {
       const today = todayString()
       for (const block of schedule) {
         await window.api.meetings.create({
-          ...block,
           date: today,
+          title: block.title,
+          start_time: block.start_time,
+          end_time: block.end_time,
+          description: block.notes || '',   // AI returns 'notes', meetings schema uses 'description'
+          color: block.color || '#4CB8CC',
           source: 'morning_brief',
         })
       }

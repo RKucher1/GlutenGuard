@@ -24,6 +24,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   on: (channel, callback) => {
     ipcRenderer.on(channel, callback)
   },
+  removeListener: (channel, callback) => {
+    ipcRenderer.removeListener(channel, callback)
+  },
 })
 
 // Structured API (used by new Phase 2-5 renderer code)
