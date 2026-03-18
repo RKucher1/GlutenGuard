@@ -2,24 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── DayForge Design Tokens ─────────────────────────────────────────────────
+   Palette derived from the DayForge logo:
+     - Deep navy backgrounds  (#0A1628 – #1A2F4A)
+     - Teal accent            (#4CB8CC  "Forged" text colour)
+     - Copper / bronze        (#C87941  compass rose)
+     - Gold highlight         (#D4A857  needle glow)
+     - Steel blue             (#6B9CC4  crescent / circuit)
+   ──────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Backgrounds */
+  --bg-primary:      #0A1628;
+  --bg-secondary:    #0D1B2A;
+  --bg-card:         #112038;
+  --bg-card-hover:   #1A2F4A;
+  --bg-input:        #0D1B2A;
+
+  /* Primary accent — teal (matches "Forged" in logo) */
+  --teal:            #4CB8CC;
+  --teal-dim:        #3A9BB0;
+  --teal-glow:       rgba(76, 184, 204, 0.15);
+
+  /* Warm metallic accents */
+  --copper:          #C87941;
+  --copper-dim:      #A8622F;
+  --copper-glow:     rgba(200, 121, 65, 0.15);
+  --gold:            #D4A857;
+  --steel:           #6B9CC4;
+
+  /* Text */
+  --text-primary:    #E0E6ED;
+  --text-secondary:  #7A8FA6;
+  --text-disabled:   #3D5068;
+
+  /* Category colours — block cards */
+  --cat-deep-focus:        #0E2238;
+  --cat-deep-focus-accent: #6B9CC4;   /* steel blue */
+  --cat-content:           #0E2218;
+  --cat-content-accent:    #4CB8CC;   /* teal */
+  --cat-flex:              #221A0E;
+  --cat-flex-accent:       #D4A857;   /* gold */
+  --cat-meeting:           #1A1228;
+  --cat-meeting-accent:    #C87941;   /* copper */
+
+  /* Status */
+  --success:   #00C853;
+  --warning:   #D4A857;
+  --error:     #FF3D3D;
+  --completed: rgba(76, 184, 204, 0.08);
+
+  /* Borders */
+  --border:        rgba(76, 184, 204, 0.12);
+  --border-strong: rgba(76, 184, 204, 0.30);
+  --border-copper: rgba(200, 121, 65, 0.35);
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
-::-webkit-scrollbar {
-  width: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+/* ── Scrollbars ────────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb {
-  background: #1e3a5f;
-  border-radius: 2px;
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--teal-dim); }
+
+/* ── Loading pulse ─────────────────────────────────────────────────────── */
+.loading-pulse {
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
 }

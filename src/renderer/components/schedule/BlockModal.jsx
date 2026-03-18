@@ -36,7 +36,7 @@ export default function BlockModal({ block, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-[#112244] rounded-xl p-6 w-96 shadow-xl"
+        className="bg-[#112038] rounded-xl p-6 w-96 shadow-xl"
         onClick={e => e.stopPropagation()}
       >
         <h2 className="text-white text-lg font-semibold mb-1">{block.title}</h2>
@@ -58,7 +58,7 @@ export default function BlockModal({ block, onClose }) {
               style={
                 selectedStatus === key
                   ? { background: color.bg, border: `2px solid ${color.border}`, color: color.text }
-                  : { background: '#0d1f3c', border: '2px solid #1a3a6b', color: '#9ca3af' }
+                  : { background: '#0D1B2A', border: '2px solid #1A2F4A', color: '#9ca3af' }
               }
             >
               {label}
@@ -68,7 +68,8 @@ export default function BlockModal({ block, onClose }) {
 
         {(selectedStatus === 'partial' || selectedStatus === 'skipped') && (
           <textarea
-            className="w-full bg-[#0d1f3c] text-white text-sm rounded-lg p-3 border border-[#1a3a6b] resize-none mb-4 focus:outline-none focus:border-[#00E5FF]"
+            className="w-full text-white text-sm rounded-lg p-3 resize-none mb-4 focus:outline-none"
+            style={{ background: '#0D1B2A', border: '1px solid #1A2F4A' }}
             rows={3}
             placeholder={selectedStatus === 'partial' ? 'What happened?' : 'Why was this skipped?'}
             value={note}
