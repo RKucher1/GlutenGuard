@@ -9,8 +9,8 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <div className="flex flex-col items-center w-14 bg-[#0d1f3c] h-screen py-4 flex-shrink-0">
-      <div className="text-[#00E5FF] font-bold text-lg mb-8 select-none">DF</div>
+    <div className="flex flex-col items-center w-14 bg-[#0D1B2A] h-screen py-4 flex-shrink-0 border-r border-[#1A2F4A]">
+      <div className="font-bold text-lg mb-8 select-none" style={{ color: '#4CB8CC' }}>DF</div>
       <nav className="flex flex-col items-center gap-2 w-full">
         {navItems.map(({ to, icon, label }) => (
           <NavLink
@@ -20,10 +20,11 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `w-full flex items-center justify-center h-10 text-xl transition-colors relative
                ${isActive
-                 ? 'text-[#00E5FF] border-l-2 border-[#00E5FF]'
+                 ? 'border-l-2'
                  : 'text-gray-500 hover:text-gray-300'
                }`
             }
+            style={({ isActive }) => isActive ? { color: '#4CB8CC', borderColor: '#C87941' } : {}}
             title={label}
           >
             {icon}

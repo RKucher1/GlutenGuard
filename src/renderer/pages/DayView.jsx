@@ -58,7 +58,7 @@ export default function DayView() {
         {HOURS.map(({ value }) => (
           <div
             key={value}
-            className="absolute w-full border-t border-[#1a3a6b]"
+            className="absolute w-full border-t border-[#1A2F4A]"
             style={{ top: timeToPercent(value) + '%' }}
           />
         ))}

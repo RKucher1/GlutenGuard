@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 160" width="480" height="160">
+  <defs>
+    <!-- Radial gradient for compass rose — warm copper centre -->
+    <radialGradient id="compassGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#D4A857"/>
+      <stop offset="40%"  stop-color="#C87941"/>
+      <stop offset="100%" stop-color="#6B9CC4" stop-opacity="0.6"/>
+    </radialGradient>
+
+    <!-- Outer ring gradient -->
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#6B9CC4"/>
+      <stop offset="50%" stop-color="#8AB3D4"/>
+      <stop offset="100%" stop-color="#3A5A78"/>
+    </linearGradient>
+
+    <!-- Crescent fill -->
+    <linearGradient id="crescentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"  stop-color="#1A2F4A"/>
+      <stop offset="100%" stop-color="#6B9CC4" stop-opacity="0.5"/>
+    </linearGradient>
+
+    <!-- Needle gradient -->
+    <linearGradient id="needleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#E0BC78"/>
+      <stop offset="100%" stop-color="#C87941"/>
+    </linearGradient>
+
+    <!-- Glow filter -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Circuit glow -->
+    <filter id="circuitGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ── Background ──────────────────────────────────────────────────── -->
+  <rect width="480" height="160" fill="#0A1628" rx="12"/>
+
+  <!-- ── Compass circle group (centred at 80, 80, r=66) ──────────────── -->
+  <g transform="translate(80,80)">
+
+    <!-- Outer ring -->
+    <circle r="66" fill="none" stroke="url(#ringGrad)" stroke-width="2.5" opacity="0.8"/>
+    <circle r="62" fill="#0D1B2A" opacity="0.95"/>
+
+    <!-- Crescent (left half moon) — steel blue circuit side -->
+    <path d="M 0 -62 A 62 62 0 0 0 0 62 A 44 44 0 0 1 0 -62 Z"
+          fill="url(#crescentGrad)" opacity="0.85"/>
+
+    <!-- Circuit trace lines on crescent -->
+    <g fill="none" stroke="#4CB8CC" stroke-width="0.7" opacity="0.5" filter="url(#circuitGlow)">
+      <polyline points="-32,-40 -45,-40 -50,-30"/>
+      <polyline points="-32,-20 -48,-20 -55,-10 -55,10 -48,20 -32,20"/>
+      <polyline points="-32,40 -45,40 -50,30"/>
+      <circle cx="-50" cy="-30" r="2" fill="#4CB8CC"/>
+      <circle cx="-55" cy="-10" r="2" fill="#4CB8CC"/>
+      <circle cx="-55"  cy="10" r="2" fill="#4CB8CC"/>
+      <circle cx="-50"  cy="30" r="2" fill="#4CB8CC"/>
+    </g>
+
+    <!-- Compass rose — 8-point star (warm copper/gold) -->
+    <g fill="url(#compassGrad)" filter="url(#glow)">
+      <!-- N / S  points -->
+      <polygon points="0,-50 6,-12 0,-20 -6,-12" fill="#D4A857"/>
+      <polygon points="0, 50 6, 12 0, 20 -6, 12" fill="#C87941"/>
+      <!-- E / W  points -->
+      <polygon points=" 50,0  12,-6  20,0  12,6"  fill="#C87941"/>
+      <polygon points="-50,0 -12,-6 -20,0 -12,6"  fill="#D4A857"/>
+      <!-- NE / SW / NW / SE  — shorter -->
+      <polygon points=" 32,-32  6,-10  14,-14  10,-6"  fill="#C87941" opacity="0.85"/>
+      <polygon points="-32, 32 -6, 10 -14, 14 -10,  6" fill="#D4A857" opacity="0.85"/>
+      <polygon points="-32,-32 -6,-10 -14,-14 -10,-6"  fill="#C87941" opacity="0.85"/>
+      <polygon points=" 32, 32  6, 10  14, 14  10,  6" fill="#D4A857" opacity="0.85"/>
+    </g>
+
+    <!-- Centre jewel — icy star -->
+    <circle r="9" fill="#0A1628"/>
+    <polygon points="0,-9 2,-2 9,-2 3,2 5,9 0,5 -5,9 -3,2 -9,-2 -2,-2"
+             fill="#9ADCE8" opacity="0.9" filter="url(#glow)"/>
+
+    <!-- Needle — copper/gold diagonal -->
+    <line x1="-48" y1="48" x2="48" y2="-48"
+          stroke="url(#needleGrad)" stroke-width="2.5"
+          stroke-linecap="round" filter="url(#glow)"/>
+    <!-- Needle tip (pointing NE) -->
+    <polygon points="48,-48 36,-40 40,-36" fill="#E0BC78"/>
+    <!-- Needle tail (pointing SW) -->
+    <polygon points="-48,48 -36,40 -40,36" fill="#3A5A78"/>
+  </g>
+
+  <!-- ── Wordmark ────────────────────────────────────────────────────── -->
+  <text x="164" y="78"
+        font-family="'Segoe UI', system-ui, -apple-system, sans-serif"
+        font-size="40" font-weight="700" letter-spacing="-1"
+        fill="#1C2D45">Day</text>
+
+  <text x="245" y="78"
+        font-family="'Segoe UI', system-ui, -apple-system, sans-serif"
+        font-size="40" font-weight="700" letter-spacing="-1"
+        fill="#4CB8CC">Forged</text>
+
+  <!-- TM superscript -->
+  <text x="420" y="52"
+        font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="12" fill="#7A8FA6">™</text>
+
+  <!-- Tagline -->
+  <text x="165" y="104"
+        font-family="'Segoe UI', system-ui, -apple-system, sans-serif"
+        font-size="13" font-weight="400" letter-spacing="0.5"
+        fill="#7A8FA6">Your day, deliberately designed.</text>
+</svg>

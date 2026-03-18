@@ -7,7 +7,7 @@ export default function TopBar() {
   const dayName = new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })
 
   return (
-    <div className="flex items-center justify-between px-4 h-12 bg-[#0d1f3c] border-b border-[#1a3a6b] flex-shrink-0">
+    <div className="flex items-center justify-between px-4 h-12 bg-[#0D1B2A] border-b border-[#1A2F4A] flex-shrink-0">
       <div className="text-sm text-gray-400 w-48">
         {formatDisplayDate(selectedDate)}
       </div>
@@ -33,7 +33,8 @@ export default function TopBar() {
       <div className="w-48 flex justify-end">
         <button
           onClick={loadToday}
-          className="text-xs text-[#00E5FF] hover:text-[#33ecff] border border-[#00E5FF] px-3 py-1 rounded transition-colors"
+          className="text-xs px-3 py-1 rounded transition-colors"
+          style={{ color: '#4CB8CC', border: '1px solid #4CB8CC' }}
         >
           Today
         </button>
