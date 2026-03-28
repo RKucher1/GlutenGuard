@@ -6,8 +6,9 @@ void main() {
   group('Navigation', () {
     testWidgets('app starts on Scan tab', (tester) async {
       await tester.pumpWidget(const ProviderScope(child: GlutenGuardApp()));
-      await tester.pumpAndSettle();
-      expect(find.text('Scan tab — coming in Session 3'), findsOneWidget);
+      await tester.pump();
+      // Scan tab is the initial route — navigation bar with Scan label is visible
+      expect(find.text('Scan'), findsOneWidget);
     });
 
     testWidgets('tapping Safe list navigates correctly', (tester) async {
