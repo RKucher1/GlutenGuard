@@ -15,15 +15,15 @@
 ---
 
 ## Current state
-- Phase: P0/Wk1 COMPLETE
-- Tests passing: 0
-- Last stable commit: P0/Wk1 API validation
-- Last commit message: P0/Wk1 API validation: OFF + OpenFDA + USDA FDC confirmed, FSIS blocked, Supabase pending (0 tests)
-- Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev).
-- Next action: P1/Wk2 — Flutter scaffold. Run: flutter create glutenguard
+- Phase: P1/Wk2 COMPLETE
+- Tests passing: 15
+- Last stable commit: P1/Wk2 database: drift AppDatabase, ScanHistoryDao, ProductCacheDao, PantryItems (15 tests)
+- Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev). Run tests with `LD_LIBRARY_PATH=/tmp/sqlitelib flutter test` (WSL2 needs sqlite3 symlink).
+- Next action: P2/Wk3 Session 1 — OFF service + barcode scanner UI
 - GitHub remote: https://github.com/RKucher1/GlutenGuard
 - Assets built: assets/gluten_knowledge_base.json (T1:8, T2:17, Flagged:6), assets/gluten_products_kb.json (28 patterns, 10 categories), assets/pantry_ingredients.json (199 items)
 - Recipe module spec: GlutenGuard_RecipeModule.docx — AI recipe generation + smart pantry (P5+ feature, Claude API)
+- Database: lib/data/database/ — AppDatabase (4 tables), ScanHistoryDao, ProductCacheDao, database_provider.dart (Riverpod providers)
 
 ---
 
