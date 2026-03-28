@@ -15,11 +15,11 @@
 ---
 
 ## Current state
-- Phase: P1/Wk2 COMPLETE
-- Tests passing: 15
-- Last stable commit: P1/Wk2 database: drift AppDatabase, ScanHistoryDao, ProductCacheDao, PantryItems (15 tests)
-- Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev). Run tests with `LD_LIBRARY_PATH=/tmp/sqlitelib flutter test` (WSL2 needs sqlite3 symlink).
-- Next action: P2/Wk3 Session 1 — OFF service + barcode scanner UI
+- Phase: P2/Wk3 session 1 complete
+- Tests passing: 21
+- Last stable commit: P2/Wk3 OFF service: Product model (freezed), OpenFoodFactsService, barcode fetch, ingredient + nutriments parsing, sodium conversion, kJ→kcal, serving size (21 tests)
+- Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev). Run tests with `LD_LIBRARY_PATH=/tmp/sqlitelib flutter test -j 1` (WSL2: sqlite3 symlink needed; -j 1 needed to prevent native-plugin parallel test drop).
+- Next action: P2/Wk3 Session 2 — barcode scanner UI + wire to OFF service (first live scan)
 - GitHub remote: https://github.com/RKucher1/GlutenGuard
 - Assets built: assets/gluten_knowledge_base.json (T1:8, T2:17, Flagged:6), assets/gluten_products_kb.json (28 patterns, 10 categories), assets/pantry_ingredients.json (199 items)
 - Recipe module spec: GlutenGuard_RecipeModule.docx — AI recipe generation + smart pantry (P5+ feature, Claude API)
