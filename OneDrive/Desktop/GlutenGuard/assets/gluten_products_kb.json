@@ -1,0 +1,399 @@
+{
+  "schema_version": 1,
+  "last_updated": "2026-03-28",
+  "product_categories": [
+    {
+      "category": "Breakfast Cereals",
+      "risk_level": "HIGH",
+      "category_warning": "Most mainstream cereals are NOT gluten-free. Malt flavoring (barley-derived) is the most common hidden source. Always look for an explicit certified GF label.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Malt-flavored rice cereals",
+          "examples": ["Kellogg's Rice Krispies", "Kellogg's Corn Flakes", "Kellogg's Frosted Flakes"],
+          "reason": "Contains malt flavoring derived from barley. NOT gluten-free despite appearing rice/corn based.",
+          "safe_alternative": "Erewhon Crispy Brown Rice, Three Wishes (certified GF)"
+        },
+        {
+          "product_type": "Granola and granola bars",
+          "examples": ["Nature Valley Crunchy Granola Bars", "most store-brand granola"],
+          "reason": "Made with non-certified oats. Many formulations also contain wheat. Require explicit certified GF label.",
+          "safe_alternative": "Kind GF-labelled bars, RXBAR (check label)"
+        },
+        {
+          "product_type": "Controversial oat cereals",
+          "examples": ["Cheerios (regular, honey nut)", "Quaker Oats (regular)"],
+          "reason": "Cheerios uses a mechanical sorting process GFWD considers unreliable. Quaker Oats are not certified GF. High cross-contamination risk.",
+          "safe_alternative": "Certified purity-protocol oats only"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Cream of Rice (plain)",
+        "Arrowhead Mills puffed rice/corn",
+        "EnviroKidz certified GF cereals",
+        "Barbara's Puffins (GF-labelled varieties)",
+        "Erewhon Crispy Brown Rice",
+        "Three Wishes (certified GF)"
+      ]
+    },
+    {
+      "category": "Sauces & Condiments",
+      "risk_level": "HIGH",
+      "category_warning": "One of the highest-risk categories. Soy sauce, malt vinegar, wheat flour thickeners, and hydrolyzed wheat protein hide in nearly every sauce type.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Traditional soy sauce",
+          "examples": ["Kikkoman regular soy sauce", "La Choy soy sauce", "generic soy sauce"],
+          "reason": "Fermented from wheat and soy. Wheat is typically listed first. NOT gluten-free.",
+          "safe_alternative": "Kikkoman GF soy sauce, San-J Tamari GF, Coconut Secret coconut aminos"
+        },
+        {
+          "product_type": "Teriyaki sauce",
+          "examples": ["Kikkoman Teriyaki", "Soy Vay", "most store-brand teriyaki"],
+          "reason": "Based on soy sauce — inherits wheat content.",
+          "safe_alternative": "Certified GF teriyaki"
+        },
+        {
+          "product_type": "Worcestershire sauce (UK/Canada)",
+          "examples": ["Lea & Perrins UK and Canada versions"],
+          "reason": "UK and Canadian Lea & Perrins contains malt vinegar. US Lea & Perrins uses distilled vinegar and is GF.",
+          "safe_alternative": "Lea & Perrins (US), French's Worcestershire"
+        },
+        {
+          "product_type": "Hoisin sauce",
+          "examples": ["Lee Kum Kee Hoisin", "most hoisin sauces"],
+          "reason": "Traditionally made with wheat flour. Contains gluten.",
+          "safe_alternative": "Certified GF hoisin only"
+        },
+        {
+          "product_type": "Oyster sauce",
+          "examples": ["Lee Kum Kee oyster sauce"],
+          "reason": "Modified starch and caramel colour from wheat. Often contains soy sauce.",
+          "safe_alternative": "Certified GF oyster sauce"
+        },
+        {
+          "product_type": "Packaged gravy",
+          "examples": ["McCormick gravy packets", "most canned gravy"],
+          "reason": "Wheat flour is the primary thickener in virtually all commercial gravy.",
+          "safe_alternative": "Certified GF gravy mixes only"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Heinz ketchup (confirmed GF)",
+        "Hellmann's mayonnaise (confirmed GF)",
+        "French's yellow mustard (confirmed GF)",
+        "Coconut Secret coconut aminos",
+        "San-J GF Tamari",
+        "Kikkoman GF Soy Sauce",
+        "Lea & Perrins Worcestershire (US only)",
+        "Stubb's Original BBQ Sauce",
+        "Frank's RedHot Original"
+      ]
+    },
+    {
+      "category": "Drinks & Beverages",
+      "risk_level": "MEDIUM",
+      "category_warning": "Most beverages are safe. Beer and malt beverages are the primary risk.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Regular beer / ale / lager",
+          "examples": ["Budweiser", "Coors (regular)", "Heineken", "Guinness", "most craft beers"],
+          "reason": "Brewed from malted barley. Contains gluten.",
+          "safe_alternative": "Ground Breaker Brewing, Glutenberg, New Planet, Ghostfish Brewing"
+        },
+        {
+          "product_type": "Gluten-removed / gluten-reduced beer",
+          "examples": ["Omission Beer", "Estrella Damm Daura"],
+          "reason": "Made from gluten-containing grains then treated. Standard tests cannot accurately measure residual gluten. NOT safe for celiac.",
+          "safe_alternative": "Dedicated GF beers brewed from sorghum, rice, or millet"
+        },
+        {
+          "product_type": "Malted milk shakes",
+          "examples": ["Any shake with 'malt' or 'malted' in name"],
+          "reason": "Malted milk powder contains dried whole milk, malted barley, and wheat flour.",
+          "safe_alternative": "Request shake without malt powder"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Water, sparkling water, mineral water",
+        "All plain coffee",
+        "All plain tea",
+        "Wine (red, white, rosé, sparkling)",
+        "Cider (apple and pear — confirm no malt)",
+        "Hard seltzers (White Claw, Truly)",
+        "Vodka, gin, rum, tequila (distilled)",
+        "Most fruit juices",
+        "Sodas (Coca-Cola, Pepsi, Sprite — all GF)"
+      ]
+    },
+    {
+      "category": "Snack Foods",
+      "risk_level": "MEDIUM",
+      "category_warning": "Flavoured snacks are high risk — seasonings frequently contain wheat, malt vinegar, or soy sauce. Plain varieties are usually safe.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Salt & vinegar crisps",
+          "examples": ["Many S&V flavour crisps"],
+          "reason": "Malt vinegar is the standard 'vinegar' flavour in UK and many US salt & vinegar snacks.",
+          "safe_alternative": "Lay's confirmed GF varieties, Cape Cod (check flavour)"
+        },
+        {
+          "product_type": "Pretzels",
+          "examples": ["Virtually all standard pretzels"],
+          "reason": "Made from wheat flour.",
+          "safe_alternative": "Snyder's GF pretzels, Quinn GF pretzels"
+        },
+        {
+          "product_type": "Standard crackers",
+          "examples": ["Ritz (regular)", "Wheat Thins", "Triscuits", "Goldfish (regular)"],
+          "reason": "Made from wheat.",
+          "safe_alternative": "Glutino GF crackers, Simple Mills crackers, Mary's Gone Crackers"
+        },
+        {
+          "product_type": "Licorice candy",
+          "examples": ["Twizzlers", "Red Vines", "Good & Plenty"],
+          "reason": "Wheat flour is the primary structural ingredient in commercial licorice candy.",
+          "safe_alternative": "YumEarth GF licorice"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Plain potato chips (Lay's Classic — confirm GF)",
+        "Plain corn tortilla chips",
+        "Popcorn (plain — check flavoured)",
+        "Rice cakes (plain)",
+        "Simple Mills crackers",
+        "Mary's Gone Crackers",
+        "Skinny Pop popcorn",
+        "Pirate's Booty"
+      ]
+    },
+    {
+      "category": "Candy & Chocolate",
+      "risk_level": "MEDIUM",
+      "category_warning": "Pure chocolate is often safe but shared equipment and additives create risk. Shared equipment warnings are extremely common in this category.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Licorice candy",
+          "examples": ["Twizzlers", "Red Vines"],
+          "reason": "Wheat flour. See snacks category.",
+          "safe_alternative": "YumEarth GF licorice"
+        },
+        {
+          "product_type": "Malt balls",
+          "examples": ["Whoppers", "Maltesers"],
+          "reason": "Malted milk = barley malt + wheat. Core product contains gluten.",
+          "safe_alternative": "None currently available"
+        },
+        {
+          "product_type": "Wafer chocolate bars",
+          "examples": ["Kit Kat", "Twix"],
+          "reason": "Wafer/biscuit layer contains wheat flour.",
+          "safe_alternative": "Plain chocolate bars (check label)"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Hershey's milk chocolate (no wheat ingredients — shared equipment note)",
+        "Reese's peanut butter cups (no wheat ingredients — shared equipment note)",
+        "Skittles",
+        "Starburst",
+        "Jolly Ranchers",
+        "Sour Patch Kids",
+        "Swedish Fish"
+      ]
+    },
+    {
+      "category": "Restaurant Foods",
+      "risk_level": "HIGH",
+      "category_warning": "Restaurant food carries cross-contamination risk even when ingredients are theoretically GF. This section covers dishes where the recipe itself commonly contains hidden gluten.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Fried rice",
+          "examples": ["Chinese restaurant fried rice", "Japanese fried rice"],
+          "reason": "Virtually always made with soy sauce (wheat).",
+          "safe_alternative": "Request with GF soy sauce or coconut aminos"
+        },
+        {
+          "product_type": "Sushi rolls with surimi",
+          "examples": ["California roll", "most imitation crab rolls"],
+          "reason": "Imitation crab (surimi) contains wheat starch. Soy sauce alongside contains wheat.",
+          "safe_alternative": "Order sashimi, request GF soy sauce"
+        },
+        {
+          "product_type": "Cream soups",
+          "examples": ["Cream of mushroom", "cream of chicken", "bisques"],
+          "reason": "Wheat flour roux is the thickening base in virtually all cream soups.",
+          "safe_alternative": "Clear broth soups, request ingredient list"
+        },
+        {
+          "product_type": "French fries",
+          "examples": ["Most restaurant fries"],
+          "reason": "Cross-contamination from shared fryer oil with breaded items. Some fries are battered with wheat.",
+          "safe_alternative": "Ask for dedicated GF fryer"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Sashimi (no soy sauce)",
+        "Grilled plain meat/fish",
+        "Plain rice (steamed)",
+        "Chipotle bowl/salad (no tortilla, confirm fresh gloves)"
+      ]
+    },
+    {
+      "category": "Baked Goods",
+      "risk_level": "HIGH",
+      "category_warning": "Standard baked goods are all unsafe. GF bakery items from shared kitchens carry high cross-contamination risk. Only dedicated GF bakeries are reliable.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Standard bread and rolls",
+          "examples": ["All standard wheat bread", "baguettes", "ciabatta", "sourdough"],
+          "reason": "Made from wheat flour.",
+          "safe_alternative": "Canyon Bakehouse, Udi's, Little Northern Bakehouse"
+        },
+        {
+          "product_type": "Standard pasta",
+          "examples": ["All standard pasta", "egg noodles", "couscous"],
+          "reason": "Made from semolina (durum wheat).",
+          "safe_alternative": "Barilla GF pasta, Tinkyada rice pasta"
+        },
+        {
+          "product_type": "Standard crackers and pretzels",
+          "examples": ["All standard crackers", "standard breadsticks"],
+          "reason": "Made from wheat flour.",
+          "safe_alternative": "Simple Mills, Mary's Gone Crackers, Glutino"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Canyon Bakehouse (dedicated GF facility)",
+        "Udi's (certified GF)",
+        "Schär (certified GF)",
+        "Simple Mills (certified GF)",
+        "Against the Grain (certified GF)",
+        "Little Northern Bakehouse (certified GF)"
+      ]
+    },
+    {
+      "category": "Dairy & Alternatives",
+      "risk_level": "LOW",
+      "category_warning": "Plain dairy is almost always safe. Flavoured varieties and some alternatives carry risk.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Standard oat milk",
+          "examples": ["Oatly (standard)", "Califia Farms Oat", "most oat milks"],
+          "reason": "Made from oats with high cross-contamination risk. Only certified GF oat milk is acceptable.",
+          "safe_alternative": "Oatly GF variant, Planet Oat certified GF, almond/coconut/rice milk"
+        },
+        {
+          "product_type": "Malted milk",
+          "examples": ["Malted milk powder", "Ovaltine"],
+          "reason": "Contains barley malt and wheat flour.",
+          "safe_alternative": "Plain hot chocolate, cocoa powder"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Plain milk (whole, 2%, skim)",
+        "Plain cream",
+        "Butter and ghee",
+        "Plain Greek yogurt",
+        "Most hard cheeses",
+        "Almond milk (plain)",
+        "Coconut milk (plain)",
+        "Rice milk (plain)"
+      ]
+    },
+    {
+      "category": "Soups & Canned Goods",
+      "risk_level": "HIGH",
+      "category_warning": "Most canned soups contain wheat flour or barley. Always check for explicit GF label.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Condensed cream soups",
+          "examples": ["Campbell's Cream of Mushroom", "Campbell's Cream of Chicken", "most cream soups"],
+          "reason": "Wheat flour is the thickening base. Not gluten-free.",
+          "safe_alternative": "Pacific Foods GF cream soups"
+        },
+        {
+          "product_type": "Barley-containing soups",
+          "examples": ["Vegetable beef with barley", "mushroom barley soup"],
+          "reason": "Barley is gluten-containing.",
+          "safe_alternative": "Amy's GF soups, Progresso GF soups (selected varieties)"
+        },
+        {
+          "product_type": "Instant noodle soups",
+          "examples": ["Top Ramen", "Maruchan", "Cup Noodles"],
+          "reason": "Wheat noodles plus soy sauce in flavour packet.",
+          "safe_alternative": "Lotus Foods GF ramen"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Amy's GF soups (labelled varieties)",
+        "Pacific Foods GF soups",
+        "Progresso GF varieties",
+        "Plain canned tomatoes",
+        "Plain canned beans and legumes",
+        "Plain canned fish (tuna, salmon in water)"
+      ]
+    },
+    {
+      "category": "Meat Fish & Poultry",
+      "risk_level": "LOW",
+      "category_warning": "Fresh unprocessed meat is safe. Processed, marinated, self-basting, and seasoned meats carry risk.",
+      "confirmed_unsafe_product_types": [
+        {
+          "product_type": "Self-basting turkey/poultry",
+          "examples": ["Self-basting frozen turkeys", "pre-basted chicken"],
+          "reason": "Self-basting solution often contains hydrolyzed wheat protein or modified starch.",
+          "safe_alternative": "Natural unflavoured turkey, baste yourself with GF ingredients"
+        },
+        {
+          "product_type": "Imitation crab / surimi",
+          "examples": ["Crab sticks", "seafood sticks", "imitation lobster"],
+          "reason": "Wheat starch binder used in all standard surimi products.",
+          "safe_alternative": "Real crab meat"
+        },
+        {
+          "product_type": "Pre-marinated meat",
+          "examples": ["Teriyaki chicken", "pre-seasoned pork loin"],
+          "reason": "Marinades typically contain soy sauce (wheat).",
+          "safe_alternative": "Plain meat, marinate yourself with GF soy sauce or coconut aminos"
+        }
+      ],
+      "confirmed_safe_products": [
+        "Fresh unprocessed beef, chicken, pork, lamb, turkey, fish",
+        "Plain frozen meat (no marinade or seasoning)",
+        "Canned tuna in water or oil (plain)",
+        "Canned salmon (plain)"
+      ]
+    }
+  ],
+  "product_patterns": {
+    "high_risk_patterns": [
+      { "pattern": "rice krispies", "warning": "Contains malt flavoring (barley). NOT gluten-free.", "tier": 1 },
+      { "pattern": "corn flakes", "warning": "Most brands contain malt flavoring (barley). Check for explicit GF label.", "tier": 2 },
+      { "pattern": "granola bar", "warning": "Most contain non-certified oats or wheat. Check for certified GF label.", "tier": 2 },
+      { "pattern": "malt", "warning": "Contains malt — barley-derived. NOT gluten-free.", "tier": 1 },
+      { "pattern": "soy sauce", "warning": "Traditional soy sauce contains wheat. Only GF-labelled soy sauce is safe.", "tier": 1 },
+      { "pattern": "teriyaki", "warning": "Based on soy sauce — contains wheat unless explicitly GF-labelled.", "tier": 1 },
+      { "pattern": "hoisin", "warning": "Contains wheat flour. Not gluten-free.", "tier": 1 },
+      { "pattern": "worcestershire", "warning": "UK/Canada versions contain malt vinegar. US Lea & Perrins is GF. Check country of origin.", "tier": 2 },
+      { "pattern": "licorice", "warning": "Commercial licorice contains wheat flour. Not gluten-free unless explicitly labelled.", "tier": 1 },
+      { "pattern": "twizzlers", "warning": "Contains wheat flour. Not gluten-free.", "tier": 1 },
+      { "pattern": "red vines", "warning": "Contains wheat flour. Not gluten-free.", "tier": 1 },
+      { "pattern": "whoppers", "warning": "Malt-based centre. Not gluten-free.", "tier": 1 },
+      { "pattern": "maltesers", "warning": "Malt-based. Not gluten-free.", "tier": 1 },
+      { "pattern": "omission", "warning": "Gluten-removed beer — NOT considered safe for celiac disease. Residual gluten undetectable by standard tests.", "tier": 2 },
+      { "pattern": "gluten removed", "warning": "NOT safe for celiac. 'Gluten removed' products retain residual gluten that standard ELISA tests cannot accurately measure.", "tier": 2 },
+      { "pattern": "gluten reduced", "warning": "NOT safe for celiac. Same issue as gluten-removed.", "tier": 2 },
+      { "pattern": "surimi", "warning": "Imitation seafood — contains wheat starch binder. Not gluten-free.", "tier": 1 },
+      { "pattern": "imitation crab", "warning": "Contains wheat starch. Not gluten-free.", "tier": 1 },
+      { "pattern": "oat milk", "warning": "Check for certified GF label — oats are high cross-contamination risk.", "tier": 2 },
+      { "pattern": "oatly", "warning": "Standard Oatly is not certified GF. Only Oatly GF variant is acceptable for celiac.", "tier": 2 },
+      { "pattern": "cheerios", "warning": "Controversial for celiac. General Mills sorting process not universally accepted. GFWD advises caution.", "tier": 2 },
+      { "pattern": "quaker oats", "warning": "Not certified gluten-free. High cross-contamination risk for celiac disease.", "tier": 2 },
+      { "pattern": "panko", "warning": "Wheat-based breadcrumbs. Not gluten-free.", "tier": 1 },
+      { "pattern": "breadcrumbs", "warning": "Wheat-based. Not gluten-free unless explicitly GF-labelled.", "tier": 1 },
+      { "pattern": "ramen", "warning": "Wheat noodles. Not gluten-free unless explicitly GF-labelled.", "tier": 1 },
+      { "pattern": "udon", "warning": "Wheat noodles. Not gluten-free.", "tier": 1 },
+      { "pattern": "cream of mushroom", "warning": "Wheat flour thickened. Not gluten-free.", "tier": 1 },
+      { "pattern": "cream of chicken", "warning": "Wheat flour thickened. Not gluten-free.", "tier": 1 }
+    ]
+  }
+}
