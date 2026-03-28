@@ -1,0 +1,626 @@
+{
+  "schema_version": 1,
+  "last_updated": "2026-03-28",
+  "tier1_ingredients": [
+    {
+      "name": "wheat",
+      "tier": 1,
+      "aliases": [
+        "wheat flour", "whole wheat", "whole wheat flour", "enriched wheat flour",
+        "enriched flour", "bleached flour", "bleached wheat flour", "unbleached flour",
+        "unbleached wheat flour", "bread flour", "brown flour", "strong flour",
+        "plain flour", "all-purpose flour", "self-rising flour", "phosphate flour",
+        "wheat starch", "wheat bran", "wheat germ", "wheat berry", "wheat berries",
+        "vital wheat gluten", "wheat gluten", "hydrolyzed wheat protein",
+        "hydrolyzed wheat gluten", "wheat protein", "wheat amino acids",
+        "wheat germ extract", "wheat germ oil",
+        "triticum vulgare", "triticum aestivum", "triticum durum",
+        "triticum spelta", "triticum monococcum",
+        "atta flour", "atta", "maida", "maida flour",
+        "seitan", "fu", "wheat fu",
+        "kamut", "khorasan wheat",
+        "spelt", "dinkel", "farro grande",
+        "einkorn", "farro piccolo",
+        "emmer", "farro medio",
+        "farro",
+        "durum", "durum wheat", "semolina",
+        "couscous", "bulgur", "bulgar wheat", "bulgur wheat",
+        "freekeh", "farik",
+        "triticale",
+        "graham flour", "graham", "farina graham",
+        "farina",
+        "matzo", "matza", "matzah", "matzo meal",
+        "tabbouleh", "tabouli",
+        "wheat noodles", "udon", "ramen",
+        "panko", "panko breadcrumbs",
+        "breadcrumbs", "bread crumbs",
+        "wheat dextrin"
+      ],
+      "safe_qualifiers": [],
+      "reason": "Wheat is a primary gluten-containing grain. All varieties and derivatives contain gluten proteins that trigger celiac autoimmune response.",
+      "source_urls": [
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list",
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/",
+        "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/gluten-free-diet/art-20048530"
+      ]
+    },
+    {
+      "name": "barley",
+      "tier": 1,
+      "aliases": [
+        "barley flour", "barley malt", "barley malt flour", "barley malt extract",
+        "malted barley", "malted barley flour", "pearl barley", "pearled barley",
+        "barley bran", "barley grass",
+        "hordeum vulgare", "hordeum vulgare extract", "hordeum vulgare seed flour",
+        "groats", "barley groats",
+        "pot barley", "sprouted barley"
+      ],
+      "safe_qualifiers": [],
+      "reason": "Barley is a primary gluten-containing grain. Contains hordein proteins. All derivatives include gluten.",
+      "source_urls": [
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list",
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "rye",
+      "tier": 1,
+      "aliases": [
+        "rye flour", "rye bread", "rye meal", "rye berries",
+        "secale cereale",
+        "pumpernickel"
+      ],
+      "safe_qualifiers": [],
+      "reason": "Rye is a primary gluten-containing grain. Contains secalin proteins.",
+      "source_urls": [
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list"
+      ]
+    },
+    {
+      "name": "malt",
+      "tier": 1,
+      "aliases": [
+        "malt extract", "malt syrup", "malt flavoring", "malt flavouring",
+        "malt vinegar", "malted milk", "malted milk powder",
+        "barley malt", "barley malt syrup", "barley malt extract",
+        "malt flour", "malt powder",
+        "beer malt", "brewing malt",
+        "distilled malt vinegar"
+      ],
+      "safe_qualifiers": ["corn malt", "rice malt"],
+      "reason": "Malt is virtually always derived from barley unless specifically noted otherwise. Contains gluten from the barley source grain.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/",
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list"
+      ]
+    },
+    {
+      "name": "brewer's yeast",
+      "tier": 1,
+      "aliases": [
+        "brewers yeast", "brewer's yeast extract",
+        "spent brewer's yeast", "beer yeast",
+        "autolyzed yeast extract"
+      ],
+      "safe_qualifiers": ["torula yeast", "baker's yeast"],
+      "reason": "Brewer's yeast is a byproduct of beer brewing, derived from barley. Contains residual gluten unless specifically labelled gluten-free.",
+      "source_urls": [
+        "https://www.goodforyouglutenfree.com/10-surprise-products-that-contain-gluten/",
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list"
+      ]
+    },
+    {
+      "name": "soy sauce",
+      "tier": 1,
+      "aliases": [
+        "shoyu", "tamari shoyu",
+        "kecap manis", "ketjap manis",
+        "hoisin sauce",
+        "teriyaki sauce", "teriyaki marinade",
+        "oyster sauce",
+        "ponzu sauce"
+      ],
+      "safe_qualifiers": ["gluten-free soy sauce", "gf tamari", "gluten free tamari", "coconut aminos"],
+      "reason": "Traditional soy sauce is fermented with wheat — wheat is typically the first ingredient. Most Asian sauces derived from soy sauce also contain wheat.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/",
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list"
+      ]
+    },
+    {
+      "name": "beer",
+      "tier": 1,
+      "aliases": [
+        "ale", "lager", "stout", "porter", "pilsner",
+        "malt beverage", "malted beverage", "barleywine", "barley wine",
+        "wheat beer", "hefeweizen",
+        "kvass",
+        "gluten removed beer", "gluten reduced beer",
+        "crafted to remove gluten"
+      ],
+      "safe_qualifiers": ["gluten-free beer", "sorghum beer", "rice beer"],
+      "reason": "Beer is brewed from malted barley and/or wheat. 'Gluten removed' and 'gluten reduced' beers are NOT safe for celiac — the FDA allows this label even when gluten remains detectable.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/gluten-free-foods/label-reading-the-fda/",
+        "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/gluten-free-diet/art-20048530"
+      ]
+    },
+    {
+      "name": "licorice",
+      "tier": 1,
+      "aliases": [
+        "liquorice", "licorice root extract",
+        "black licorice", "licorice candy",
+        "licorice extract"
+      ],
+      "safe_qualifiers": ["gluten-free licorice"],
+      "reason": "Commercial licorice candy (Twizzlers, Red Vines, Good & Plenty) contains wheat flour as a primary ingredient.",
+      "source_urls": [
+        "https://www.goodforyouglutenfree.com/10-surprise-products-that-contain-gluten/"
+      ]
+    }
+  ],
+  "tier2_ingredients": [
+    {
+      "name": "starch",
+      "tier": 2,
+      "aliases": [
+        "food starch", "modified starch", "modified food starch",
+        "vegetable starch", "native starch"
+      ],
+      "safe_qualifiers": [
+        "tapioca", "cassava", "corn", "maize", "potato", "rice",
+        "arrowroot"
+      ],
+      "reason": "Starch can be derived from wheat when source is unspecified. 'Modified food starch' on meat and poultry products can be wheat-derived under FDA rules without declaration.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "dextrin",
+      "tier": 2,
+      "aliases": [
+        "cyclodextrin", "maltodextrin"
+      ],
+      "safe_qualifiers": ["corn", "maize", "potato", "rice", "tapioca"],
+      "reason": "Dextrin and cyclodextrin can be wheat-sourced. Maltodextrin in EU products frequently is.",
+      "source_urls": [
+        "https://gfreefoodie.com/g-free-foodie-guide-ingredient-names-for-gluten/"
+      ]
+    },
+    {
+      "name": "natural flavors",
+      "tier": 2,
+      "aliases": [
+        "natural flavoring", "natural flavourings", "natural flavour",
+        "artificial flavors", "artificial flavoring",
+        "flavoring", "flavourings"
+      ],
+      "safe_qualifiers": [],
+      "reason": "FDA does not require disclosure of gluten-containing grain sources within 'natural flavors'. Barley malt extract and wheat protein can legally hide here.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "yeast extract",
+      "tier": 2,
+      "aliases": [
+        "autolyzed yeast", "autolyzed yeast extract",
+        "yeast extract paste", "yeast spread",
+        "hydrolyzed yeast", "inactive yeast",
+        "nutritional yeast"
+      ],
+      "safe_qualifiers": ["torula", "certified gluten-free", "baker's yeast"],
+      "reason": "Yeast extract is frequently derived from spent brewer's yeast (barley-based). The Kirkland Signature Turkey Breast was flagged by GFWD for this exact issue despite a GF label.",
+      "source_urls": [
+        "https://www.goodforyouglutenfree.com/10-surprise-products-that-contain-gluten/"
+      ]
+    },
+    {
+      "name": "oats",
+      "tier": 2,
+      "aliases": [
+        "rolled oats", "instant oats", "quick oats", "steel cut oats",
+        "oat flour", "oat bran", "oat fiber", "oat groats",
+        "oatmeal", "porridge oats", "whole oats",
+        "avena sativa",
+        "oat extract"
+      ],
+      "safe_qualifiers": [
+        "certified gluten-free oats", "purity protocol oats", "gluten-free oats"
+      ],
+      "reason": "Oats are naturally gluten-free but almost always contaminated from shared fields, transport, and processing equipment. Only purity-protocol certified GF oats are safe.",
+      "source_urls": [
+        "https://www.glutenfreewatchdog.org/news/summary-of-2024-oat-testing-data/",
+        "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/gluten-free-diet/art-20048530"
+      ]
+    },
+    {
+      "name": "brown rice syrup",
+      "tier": 2,
+      "aliases": [
+        "rice malt", "rice syrup", "brown rice malt",
+        "organic brown rice syrup", "rice extract"
+      ],
+      "safe_qualifiers": ["certified gluten-free brown rice syrup"],
+      "reason": "Brown rice syrup is frequently made using barley enzymes in the fermentation process, introducing barley gluten.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "hydrolyzed vegetable protein",
+      "tier": 2,
+      "aliases": [
+        "hvp", "hydrolyzed plant protein",
+        "textured vegetable protein", "tvp",
+        "vegetable protein", "plant protein extract"
+      ],
+      "safe_qualifiers": ["hydrolyzed corn protein", "hydrolyzed rice protein"],
+      "reason": "HVP source grain is often not declared. Wheat is a common and legal source. Unless source is explicitly stated, flag AMBER.",
+      "source_urls": [
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list"
+      ]
+    },
+    {
+      "name": "glucose syrup",
+      "tier": 2,
+      "aliases": [
+        "glucose-fructose syrup", "glucose fructose",
+        "wheat glucose syrup", "glucose syrup (wheat)"
+      ],
+      "safe_qualifiers": ["corn", "maize", "rice", "potato"],
+      "reason": "Glucose syrup in European and UK products is frequently wheat-derived. US products typically use corn.",
+      "source_urls": [
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list"
+      ]
+    },
+    {
+      "name": "caramel color",
+      "tier": 2,
+      "aliases": [
+        "caramel colouring", "caramel coloring", "caramel",
+        "e150", "e150a", "e150b", "e150c", "e150d",
+        "burnt sugar"
+      ],
+      "safe_qualifiers": ["corn", "beet", "cane sugar"],
+      "reason": "Caramel color in US products is almost always corn or beet based and safe. In EU products it may be wheat-derived.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "soba noodles",
+      "tier": 2,
+      "aliases": ["soba", "buckwheat soba"],
+      "safe_qualifiers": ["100% buckwheat", "100 percent buckwheat", "pure buckwheat"],
+      "reason": "Soba noodles are traditionally made from a blend of buckwheat AND wheat flour. Only 100% buckwheat soba is safe.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "tamari",
+      "tier": 2,
+      "aliases": ["tamari sauce", "tamari soy sauce"],
+      "safe_qualifiers": ["gluten-free tamari", "certified gluten-free", "wheat-free tamari"],
+      "reason": "Traditional tamari is usually wheat-free but some brands add small amounts of wheat. Only tamari explicitly labelled gluten-free is safe.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "miso",
+      "tier": 2,
+      "aliases": [
+        "miso paste", "miso soup", "white miso", "red miso",
+        "shiro miso", "aka miso", "mugi miso", "barley miso"
+      ],
+      "safe_qualifiers": ["gluten-free miso", "rice miso", "chickpea miso"],
+      "reason": "Mugi miso and many traditional miso pastes are made with barley. Must verify brand and type.",
+      "source_urls": [
+        "https://www.celiac.com/celiac-disease/forbidden-gluten-food-list"
+      ]
+    },
+    {
+      "name": "spice blend",
+      "tier": 2,
+      "aliases": [
+        "mixed spices", "seasoning", "seasonings",
+        "proprietary seasoning", "herbs and spices",
+        "spice mix", "spice blend"
+      ],
+      "safe_qualifiers": ["certified gluten-free", "gluten-free spices"],
+      "reason": "Spice blends may contain wheat flour or wheat starch as an anti-caking agent.",
+      "source_urls": [
+        "https://www.celiac.com/celiac-disease/safe-gluten-free-spices-and-brands-a-celiac-disease-guide-r6784/"
+      ]
+    },
+    {
+      "name": "bouillon",
+      "tier": 2,
+      "aliases": [
+        "bouillon cube", "stock cube", "chicken stock",
+        "beef stock", "vegetable stock", "gravy cube", "gravy mix",
+        "broth powder", "soup base", "soup powder"
+      ],
+      "safe_qualifiers": ["certified gluten-free", "gluten-free stock"],
+      "reason": "Powdered and cube stocks commonly contain yeast extract (barley-derived), wheat starch, or wheat flour as a binding agent.",
+      "source_urls": [
+        "https://www.prospectmedical.com/are-you-really-gluten-free-hidden-sources-gluten-0"
+      ]
+    },
+    {
+      "name": "processed deli meat",
+      "tier": 2,
+      "aliases": [
+        "deli meat", "lunch meat", "cold cut", "cold cuts",
+        "bologna", "salami", "pepperoni", "sausage",
+        "hot dog", "frankfurter", "bratwurst",
+        "corned beef", "pastrami",
+        "meatloaf", "meatballs", "hamburger patty"
+      ],
+      "safe_qualifiers": ["certified gluten-free"],
+      "reason": "Processed meats use wheat-based fillers, binders, hydrolyzed wheat protein, and barley malt extract for flavor and texture.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "surimi",
+      "tier": 2,
+      "aliases": [
+        "imitation crab", "crab stick", "seafood stick",
+        "imitation lobster", "imitation scallop", "seafood analogue"
+      ],
+      "safe_qualifiers": ["real crab"],
+      "reason": "Surimi (imitation crab/seafood) uses wheat starch as a binder in most commercial preparations.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "vegetarian burger",
+      "tier": 2,
+      "aliases": [
+        "veggie burger", "plant-based burger", "veggie sausage",
+        "vegetarian sausage", "vegan burger", "plant burger",
+        "meat alternative", "meat substitute",
+        "plant-based meat"
+      ],
+      "safe_qualifiers": ["certified gluten-free", "pea protein based"],
+      "reason": "Meat substitutes very commonly use seitan (pure wheat gluten) or textured wheat protein as their primary ingredient.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    }
+  ],
+  "tier3_flags": [
+    {
+      "name": "wheat-free without gluten-free",
+      "tier": 3,
+      "trigger": "label_claim",
+      "pattern": "wheat.free",
+      "negative_pattern": "gluten.free",
+      "reason": "Wheat-free does not mean gluten-free. Products labelled wheat-free may still contain spelt, rye, barley, or cross-contaminated oats.",
+      "source_urls": [
+        "https://celiac.org/gluten-free-living/what-is-gluten/sources-of-gluten/"
+      ]
+    },
+    {
+      "name": "may contain wheat",
+      "tier": 3,
+      "trigger": "cross_contamination_statement",
+      "pattern": "may contain wheat",
+      "reason": "Cross-contamination advisory. Facility produces wheat-containing products on shared lines.",
+      "source_urls": []
+    },
+    {
+      "name": "manufactured in facility with wheat",
+      "tier": 3,
+      "trigger": "cross_contamination_statement",
+      "pattern": "manufactured in a facility",
+      "reason": "Shared facility advisory. Relevant for extremely sensitive users.",
+      "source_urls": []
+    },
+    {
+      "name": "gluten removed label",
+      "tier": 3,
+      "trigger": "label_claim",
+      "pattern": "gluten removed",
+      "reason": "FDA allows 'gluten removed' labelling even when gluten is still detectable. NOT safe for celiac disease.",
+      "source_urls": [
+        "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/gluten-free-diet/art-20048530"
+      ]
+    }
+  ],
+  "safe_ingredients": {
+    "grains_and_starches": [
+      "buckwheat", "buckwheat flour", "buckwheat groats",
+      "rice", "white rice", "brown rice", "rice flour", "rice starch",
+      "corn", "maize", "cornmeal", "corn flour", "corn starch", "cornstarch", "polenta",
+      "tapioca", "tapioca starch", "tapioca flour",
+      "cassava", "cassava flour",
+      "potato starch", "potato flour",
+      "arrowroot", "arrowroot starch",
+      "sorghum", "sorghum flour",
+      "teff", "teff flour",
+      "millet", "millet flour",
+      "amaranth", "amaranth flour",
+      "quinoa", "quinoa flour",
+      "almond flour", "almond meal",
+      "coconut flour",
+      "chickpea flour", "besan", "gram flour",
+      "lentil flour",
+      "pea flour"
+    ],
+    "fats_and_oils": [
+      "olive oil", "canola oil", "sunflower oil",
+      "vegetable oil", "coconut oil", "avocado oil",
+      "sesame oil", "peanut oil",
+      "butter", "ghee", "lard"
+    ],
+    "proteins": [
+      "chicken", "beef", "pork", "lamb", "turkey", "duck",
+      "salmon", "tuna", "cod", "shrimp", "prawn",
+      "crab", "lobster", "clams", "oysters",
+      "eggs", "egg white", "egg yolk",
+      "milk", "cream", "butter", "cheese", "yogurt",
+      "tofu", "tempeh",
+      "beans", "lentils", "chickpeas",
+      "peanuts", "almonds", "walnuts",
+      "pea protein", "rice protein"
+    ],
+    "sweeteners": [
+      "sugar", "cane sugar", "beet sugar", "brown sugar",
+      "honey", "maple syrup", "agave",
+      "stevia", "erythritol", "xylitol",
+      "corn syrup", "glucose", "coconut sugar"
+    ],
+    "thickeners_and_gums": [
+      "xanthan gum", "guar gum", "locust bean gum",
+      "gelatin", "agar", "carrageenan",
+      "pectin", "cellulose gum",
+      "psyllium husk"
+    ],
+    "acids_and_additives": [
+      "citric acid", "acetic acid", "lactic acid", "ascorbic acid",
+      "sodium bicarbonate", "baking soda",
+      "lecithin", "soy lecithin", "sunflower lecithin",
+      "monoglycerides", "diglycerides",
+      "carmine", "annatto", "turmeric"
+    ],
+    "vinegars": [
+      "apple cider vinegar", "red wine vinegar", "white wine vinegar",
+      "balsamic vinegar", "rice wine vinegar", "rice vinegar",
+      "distilled white vinegar", "distilled vinegar"
+    ],
+    "produce": [
+      "all fresh fruits", "all fresh vegetables",
+      "potatoes", "sweet potatoes", "yams",
+      "corn on the cob",
+      "herbs (fresh or dried single ingredient)"
+    ],
+    "dairy": [
+      "milk", "whole milk", "skim milk", "cream", "heavy cream",
+      "sour cream", "plain yogurt", "greek yogurt",
+      "butter", "ghee", "most hard cheeses",
+      "cottage cheese", "ricotta", "mascarpone",
+      "whey protein (unflavored)"
+    ],
+    "beverages": [
+      "water", "sparkling water", "coffee", "plain tea",
+      "wine", "cider (apple or pear, no malt)",
+      "pure fruit juice",
+      "distilled spirits (vodka, gin, rum, tequila, brandy)"
+    ]
+  },
+  "false_positive_guards": {
+    "entries": [
+      {
+        "ingredient": "buckwheat",
+        "reason": "Despite the name, buckwheat is not wheat. It is a seed related to rhubarb. Completely gluten-free.",
+        "result": "GREEN",
+        "regex_note": "Word boundary critical — \\bbuckwheat\\b must NOT trigger \\bwheat\\b rule"
+      },
+      {
+        "ingredient": "maltodextrin",
+        "reason": "In North America, maltodextrin is almost always corn-derived and safe. In EU may be wheat-derived but typically processed.",
+        "result": "GREEN (US) / AMBER (EU imports)"
+      },
+      {
+        "ingredient": "distilled vinegar",
+        "reason": "Distillation removes gluten protein completely. Safe regardless of source grain. Malt vinegar is the exception.",
+        "result": "GREEN"
+      },
+      {
+        "ingredient": "corn syrup",
+        "reason": "Derived from corn starch. Does not contain gluten.",
+        "result": "GREEN"
+      },
+      {
+        "ingredient": "vanilla extract",
+        "reason": "Pure vanilla extract is alcohol-based (from corn/sugarcane). Gluten-free.",
+        "result": "GREEN"
+      },
+      {
+        "ingredient": "citric acid",
+        "reason": "Produced by fermentation of glucose (corn or sugarcane). Gluten-free.",
+        "result": "GREEN"
+      },
+      {
+        "ingredient": "xanthan gum",
+        "reason": "Produced by bacterial fermentation of sugars. No grain involvement.",
+        "result": "GREEN"
+      },
+      {
+        "ingredient": "lecithin",
+        "reason": "Usually derived from soy or sunflower. Even if from wheat, lecithin is a fat not a protein and does not contain gluten.",
+        "result": "GREEN"
+      },
+      {
+        "ingredient": "lactic acid",
+        "reason": "Produced by bacterial fermentation of sugars. Gluten-free.",
+        "result": "GREEN"
+      }
+    ]
+  },
+  "flagged_products": [
+    {
+      "name": "Gluten-Free Rolled Oats",
+      "brand": "Trader Joe's",
+      "upc": null,
+      "issue": "GFWD 2024 testing: 3 of 7 bags tested above 20ppm. GF label unreliable for extremely sensitive celiacs.",
+      "source_url": "https://www.glutenfreewatchdog.org/news/summary-of-2024-oat-testing-data/",
+      "date_flagged": "2024-01-01",
+      "is_recall": false
+    },
+    {
+      "name": "Roasted Turkey Breast",
+      "brand": "Kirkland Signature (Costco)",
+      "upc": null,
+      "issue": "Contains yeast extract. GFWD flagged for potential barley-derived yeast extract despite GF label. Manufacturer has not confirmed yeast source.",
+      "source_url": "https://www.glutenfreewatchdog.org",
+      "date_flagged": "2024-06-01",
+      "is_recall": false
+    },
+    {
+      "name": "Batter Than Good Baking Company Flour",
+      "brand": "Batter Than Good",
+      "upc": null,
+      "issue": "Labelled GF. Tested at 177,669 ppm gluten despite GF label. Reported to FDA March 2023.",
+      "source_url": "https://www.glutenfreewatchdog.org/news/running-list-of-misbranded-gluten-free-products-reported-to-fda-by-gfwd-in-2020/",
+      "date_flagged": "2023-03-21",
+      "is_recall": false
+    },
+    {
+      "name": "Sweet & Smokey BBQ Finishing Sauce",
+      "brand": "Golden Toad",
+      "upc": null,
+      "issue": "Labelled GF. Mesquite smoke powder sub-ingredient contains malt barley flour. Reported to FDA June 2023.",
+      "source_url": "https://www.glutenfreewatchdog.org/news/running-list-of-misbranded-gluten-free-products-reported-to-fda-by-gfwd-in-2020/",
+      "date_flagged": "2023-06-14",
+      "is_recall": false
+    },
+    {
+      "name": "Unicorn Blend Night Before Christmas Sprinkles",
+      "brand": "Sweet Eva's",
+      "upc": null,
+      "issue": "Labelled GF but contains malt extract in ingredients list. Reported to FDA December 2022.",
+      "source_url": "https://www.glutenfreewatchdog.org/news/running-list-of-misbranded-gluten-free-products-reported-to-fda-by-gfwd-in-2020/",
+      "date_flagged": "2022-12-13",
+      "is_recall": false
+    },
+    {
+      "name": "Pure Oats Rolled Oats",
+      "brand": "Pure Oats",
+      "upc": null,
+      "issue": "GFWD 2025 testing found oats out of compliance with GF labelling rule.",
+      "source_url": "https://www.glutenfreewatchdog.org/news/gluten-free-watchdog-2025-summary-report/",
+      "date_flagged": "2025-01-01",
+      "is_recall": false
+    }
+  ]
+}
