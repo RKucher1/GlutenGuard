@@ -2,6 +2,26 @@
 # Flutter · iOS & Android
 # Read this file first. Every session. No exceptions.
 
+
+---
+
+## What GlutenGuard is — read this before writing any code
+
+GlutenGuard is a cross-platform mobile app for people with celiac disease and gluten sensitivity. It is a health-safety tool, not a lifestyle app.
+
+**Core mechanic:** Camera → ingredient label → OCR → GlutenAnalysisEngine classifies each ingredient → RED (gluten), AMBER (uncertain), or GREEN (safe).
+
+**Who uses it:** Celiac patients scanning food in stressful environments — grocery aisles, restaurant tables. Anxiety must go down when they open the app, not up.
+
+**The critical safety principle — never violate this:**
+- A GREEN on a gluten-containing product is a health event for someone who trusted this app.
+- An AMBER on a safe product is an inconvenience.
+- Err conservative. AMBER over GREEN, RED over AMBER. When in doubt, flag it.
+- The medical disclaimer exists. The engineering goal is to never need it.
+
+---
+
+
 ## Project identity
 - App name: GlutenGuard
 - Bundle ID (iOS): com.[yourname].glutenguard
@@ -15,43 +35,76 @@
 ---
 
 ## Current state
-- Phase: P2/Wk4 session 1 complete
-- Tests passing: 65
-- Last stable commit: P2/Wk4 OCR service: GlutenAnalysisEngine, barcode scanner UI, result page, OcrService, IngredientRegionDetector, IngredientParser (65 tests)
-- Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev). Run tests with `LD_LIBRARY_PATH=/tmp/sqlitelib flutter test -j 1` (WSL2: sqlite3 symlink needed; -j 1 needed to prevent native-plugin parallel test drop).
-- Next action: P2/Wk4 Session 2 — OCR scanner UI with live preview (OcrScannerPage + OcrResultPage, wired to OcrService)
+- Phase: P2/Wk4 session 2 complete
+- Tests passing: 90
+- Last stable commit: P2/Wk4 OCR scanner UI: OcrScannerPage + OcrResultPage wired to OcrService, Ingredients chip wired in BarcodeScannerPage (90 tests)
+- Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev). Run tests with `LD_LIBRARY_PATH=/tmp/sqlitelib /home/rkucher/flutter/bin/flutter test -j 1` (WSL2: use Linux flutter at /home/rkucher/flutter/bin/flutter — Windows flutter at /mnt/c/tools/flutter has CRLF script endings that break in WSL2; sqlite3 symlink needed; -j 1 needed to prevent native-plugin parallel test drop). OcrScannerPage uses image_picker for capture (mobile_scanner v5.2.3 has no captureImage() — live frame OCR upgrade to camera package deferred to P3).
+- Next action: P3/Wk5 — Result screens: RED/AMBER/GREEN full result pages (ResultHeader, ExplanationCard, IngredientChip, SourceBadge, QuickSaveToast)
 - GitHub remote: https://github.com/RKucher1/GlutenGuard
 - Assets built: assets/gluten_knowledge_base.json (T1:8, T2:17, Flagged:6), assets/gluten_products_kb.json (28 patterns, 10 categories), assets/pantry_ingredients.json (199 items)
 - Recipe module spec: GlutenGuard_RecipeModule.docx — AI recipe generation + smart pantry (P5+ feature, Claude API)
 - Database: lib/data/database/ — AppDatabase (4 tables), ScanHistoryDao, ProductCacheDao, database_provider.dart (Riverpod providers)
-
+- Recipe cache DB: Recipes table not yet built — schema planned:
+  promptHash (cache key), title, category, ingredientsJson, stepsJson, generatedAt
+  Logic: hash request → check DB first → hit Claude API only on cache miss → save result
+  Claude API key: store in flutter_secure_storage, never hardcode. Get from console.anthropic.com
+  Build in P5 alongside recipe UI session.
+  - Menu scan feature: planned for P5 — full-frame OCR capture on menu text, run each
+  dish description through GlutenAnalysisEngine, display inline color dot per dish
+  (RED/AMBER/GREEN). Same OcrService + GlutenAnalysisEngine pipeline as ingredients scan,
+  no new analysis logic needed. Add manual override checkbox ("waiter confirmed contains X").
+  Files: menu_scanner_page.dart, menu_highlight_painter.dart (already in architecture).
 ---
 
 ## Session protocol
 1. Read this file. Always. Before writing any code.
 2. Check Current State above — current phase and exact test count.
 3. Build only the current phase milestone. Do not skip ahead.
-4. Run `flutter test` before committing.
-5. End every session: git commit → update Current State above.
-6. Commit format: `P{n}/Wk{n} {description}: {key changes} ({N} tests passing)`
-7. Never pad the test count. Exact number only.
-8. Never leave the project in a broken build state.
-9. Run `flutter analyze` before committing — zero warnings in new code.
-10. After any model, provider, or database change: `flutter pub run build_runner build --delete-conflicting-outputs`
+4. **Write tests alongside every feature — no feature ships without tests.**
+5. Run `LD_LIBRARY_PATH=/tmp/sqlitelib /home/rkucher/flutter/bin/flutter test -j 1` before committing.
+6. End every session: git commit → update Current State above.
+7. Commit format: `P{n}/Wk{n} {description}: {key changes} ({N} tests passing)`
+8. Never pad the test count. Exact number only.
+9. Never leave the project in a broken build state.
+10. Run `/home/rkucher/flutter/bin/flutter analyze` before committing — zero warnings in new code.
+11. After any model, provider, or database change: `/home/rkucher/flutter/bin/flutter pub run build_runner build --delete-conflicting-outputs`
+
+
+## Claude Code efficiency rules — follow every session
+
+- No preamble, no summaries, no affirmations — go straight to work
+- Diffs only — never rewrite a full file when a targeted edit will do
+- Use `str_replace` for edits, not full file rewrites
+- **Test-driven: every new file, class, or function gets a test. No exceptions.**
+  - New service/logic class → unit test in `test/core/` or `test/features/`
+  - New widget page → widget test verifying key UI elements and states
+  - New provider → test with fake/stub dependencies
+  - Tests must cover: happy path, empty/null edge case, error state
+- Run only tests affected by the change — not the full suite — unless doing final pre-commit check
+- Read files before asking questions about their contents
+- Stop before `git` ops and destructive DB ops — report and wait for direction
+- If scope changes mid-session, stop and report — do not expand silently
+- End-of-session output only: "X passing, Y failing. [one line summary of what was built]"
+
+---
 
 ---
 
 ## Key commands
 ```bash
-flutter pub get                                              # install dependencies
-flutter pub run build_runner build --delete-conflicting-outputs  # code generation
-flutter test                                                 # run all tests
-flutter test test/core/                                      # core analysis tests only
-flutter analyze                                              # static analysis
-flutter run -d ios                                           # iOS simulator
-flutter run -d android                                       # Android emulator
-flutter build ios --release                                  # iOS release build
-flutter build appbundle --release                            # Android Play Store upload
+# WSL2: Always use the Linux flutter, NOT /mnt/c/tools/flutter (Windows version has CRLF scripts that break in WSL2)
+FLUTTER=/home/rkucher/flutter/bin/flutter
+
+$FLUTTER pub get                                                          # install dependencies
+$FLUTTER pub run build_runner build --delete-conflicting-outputs          # code generation
+LD_LIBRARY_PATH=/tmp/sqlitelib $FLUTTER test -j 1                        # run all tests (WSL2)
+LD_LIBRARY_PATH=/tmp/sqlitelib $FLUTTER test test/core/ -j 1             # core tests only
+LD_LIBRARY_PATH=/tmp/sqlitelib $FLUTTER test test/features/ -j 1         # feature tests only
+$FLUTTER analyze                                                          # static analysis
+$FLUTTER run -d ios                                                       # iOS simulator
+$FLUTTER run -d android                                                   # Android emulator
+$FLUTTER build ios --release                                              # iOS release build
+$FLUTTER build appbundle --release                                        # Android Play Store upload
 ```
 
 ---
@@ -130,6 +183,7 @@ P7/Wk9 TestFlight + Play beta (288 tests)
 - [ ] ProductFlagPage: flag type picker, optional image_picker photo, Supabase POST
 - [ ] Manual review gate — flags never auto-escalate without review
 - [ ] MenuScannerPage: full-frame MLKit capture, MenuHighlightPainter for inline flags
+- [ ] MenuScannerPage: reuses OcrService + GlutenAnalysisEngine — no new analysis logic
 - [ ] Manual ingredient check input on menu page
 - [ ] Commit: P5/Wk7 (target: 238 tests)
 
@@ -538,7 +592,41 @@ class AppColors {
 - Do not compete with their restaurant directory (150k US places) at launch
 - Our menu OCR serves a better in-the-moment use case — scan the actual menu in front of you
 
+
+## Result screen behavior — exact spec per verdict
+
+**RED result:**
+- Background `AppColors.redLight` — headline in `AppColors.resultRed`
+- Explanation block ("which ingredient and why") appears FIRST, above the ingredient list
+- Each flagged ingredient highlighted in list below
+- "Do not eat" — label only, not a button
+- Source badge + confidence score
+- No save button
+
+**GREEN result:**
+- Background `AppColors.greenLight` — headline in `AppColors.resultGreen`
+- Source and confidence shown prominently (not buried)
+- "Save to Safe List" — `AppColors.brandBlue` button, shows in-screen toast on save
+- "Scan another" secondary CTA
+
+**AMBER result:**
+- Background `AppColors.amberLight` — headline in `AppColors.resultAmber`
+- If community flag exists: flag is the HEADLINE (GFWD source + date)
+- Ingredient explanation below the flag
+- "Contact manufacturer" CTA
+- No save button
+
+**All result screens:**
+- Medical disclaimer visible — no exceptions
+- Source badge shows scan method (OCR / Barcode / Manual) + confidence %
+
 ---
+
+
+---
+
+
+
 
 ## Phase completion checklist — run before every commit
 
@@ -561,3 +649,7 @@ class AppColors {
 
 _Last updated: P0/Wk1 start — Q2 2026_
 _Flutter · iOS & Android · Claude Code Workflow_
+
+
+
+- Remaining build scope: P3 result screens → P4 safe list/history → P5 remote KB/community flags/menu → P6 RevenueCat/onboarding → P7 beta/submission

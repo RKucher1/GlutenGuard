@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../product_lookup/product_lookup_provider.dart';
 import '../../results/result_page.dart';
+import '../ocr/ocr_scanner_page.dart';
 
 class BarcodeScannerPage extends ConsumerStatefulWidget {
   const BarcodeScannerPage({super.key});
@@ -129,9 +130,11 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
               _ModeChip(
                 label: 'Ingredients',
                 selected: false,
-                onTap: () {
-                  // OCR scanner — wired in P2/Wk4 session 2
-                },
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const OcrScannerPage(),
+                  ),
+                ),
               ),
             ],
           ),
