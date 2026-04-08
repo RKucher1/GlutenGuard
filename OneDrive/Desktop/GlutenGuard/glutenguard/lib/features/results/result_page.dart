@@ -3,6 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/models/scan_result.dart';
 import '../product_lookup/product_lookup_provider.dart';
+import 'explanation_card_widget.dart';
+import 'ingredient_chip_widget.dart';
+import 'quick_save_toast.dart';
+import 'result_header_widget.dart';
+import 'source_badge_widget.dart';
 
 class ResultPage extends ConsumerWidget {
   const ResultPage({super.key});
@@ -17,8 +22,14 @@ class ResultPage extends ConsumerWidget {
             child: CircularProgressIndicator(color: AppColors.brandBlue)),
       ),
       error: (e, _) => Scaffold(
-        appBar: AppBar(backgroundColor: AppColors.brandNavy),
-        body: Center(child: Text('Error: $e')),
+        appBar: _appBar(context),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Text('Error: $e',
+                style: const TextStyle(color: AppColors.textPrimary)),
+          ),
+        ),
       ),
       data: (data) {
         if (data.product == null || data.scanResult == null) {
@@ -62,8 +73,7 @@ class _NotFoundPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 const Text(
                   'Try scanning the ingredient label directly.',
-                  style: TextStyle(
-                      fontSize: 13, color: AppColors.textMuted),
+                  style: TextStyle(fontSize: 13, color: AppColors.textMuted),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
@@ -86,165 +96,69 @@ class _NotFoundPage extends StatelessWidget {
       );
 }
 
-// ── Main result body ──────────────────────────────────────────────────────────
+// ── Result body ───────────────────────────────────────────────────────────────
 
-class _ResultBody extends StatelessWidget {
+class _ResultBody extends StatefulWidget {
   final dynamic product;
   final ScanResult scanResult;
+
   const _ResultBody({required this.product, required this.scanResult});
 
-  Color get _bandBg => switch (scanResult.tier) {
-        1 => AppColors.redLight,
-        2 => AppColors.amberLight,
-        _ => AppColors.greenLight,
-      };
+  @override
+  State<_ResultBody> createState() => _ResultBodyState();
+}
 
-  Color get _accentColor => switch (scanResult.tier) {
-        1 => AppColors.resultRed,
-        2 => AppColors.resultAmber,
-        _ => AppColors.resultGreen,
-      };
+class _ResultBodyState extends State<_ResultBody> {
+  bool _showToast = false;
+  bool _saved = false;
 
-  String get _icon => switch (scanResult.tier) {
-        1 => '✕',
-        2 => '?',
-        _ => '✓',
-      };
+  void _onSave() {
+    if (_saved) return;
+    setState(() {
+      _showToast = true;
+      _saved = true;
+    });
+  }
 
-  String get _title => switch (scanResult.tier) {
-        1 => 'Contains gluten',
-        2 => 'Uncertain — verify first',
-        _ => 'No gluten detected',
-      };
+  void _onUndo() => setState(() => _saved = false);
+
+  void _onToastDismissed() => setState(() => _showToast = false);
+
+  ScanResult get sr => widget.scanResult;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: _appBar(context),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Result band
-            Container(
-              width: double.infinity,
-              color: _bandBg,
-              padding: const EdgeInsets.symmetric(
-                  vertical: 20, horizontal: 20),
-              child: Column(children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: _accentColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      _icon,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _title,
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: _accentColor),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  product.productName,
-                  style: const TextStyle(
-                      fontSize: 13, color: AppColors.textMuted),
-                  textAlign: TextAlign.center,
-                ),
-                if (product.brand != null) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    product.brand!,
-                    style: const TextStyle(
-                        fontSize: 11, color: AppColors.textMuted),
-                  ),
-                ],
-              ]),
-            ),
+      body: Stack(children: [
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Verdict header ──────────────────────────────────────────────
+              ResultHeaderWidget(
+                tier: sr.tier,
+                productName: widget.product.productName as String?,
+                brand: widget.product.brand as String?,
+              ),
 
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Explanation for RED
-                  if (scanResult.tier == 1) ...[
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.redLight,
-                        borderRadius: BorderRadius.circular(8),
-                        border: const Border(
-                          left: BorderSide(
-                              color: AppColors.resultRed, width: 3),
-                        ),
-                      ),
-                      child: Text(
-                        scanResult.reason,
-                        style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.resultRed,
-                            height: 1.5),
-                      ),
-                    ),
-                  ],
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // RED: explanation leads
+                    if (sr.tier == 1)
+                      ExplanationCardWidget(reason: sr.reason, tier: 1),
 
-                  // Ingredient chips
-                  const Text(
-                    'INGREDIENTS',
-                    style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textMuted,
-                        letterSpacing: 0.5),
-                  ),
-                  const SizedBox(height: 8),
-                  ...scanResult.ingredientResults.map(
-                    (ir) => _IngredientRow(result: ir),
-                  ),
+                    // AMBER: explanation below (community flag will be above in P5)
+                    if (sr.tier == 2)
+                      ExplanationCardWidget(reason: sr.reason, tier: 2),
 
-                  // Source badge
-                  const SizedBox(height: 12),
-                  Row(children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: const BoxDecoration(
-                        color: AppColors.brandBlue,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Open Food Facts · ${scanResult.ingredientResults.length} ingredients',
-                      style: const TextStyle(
-                          fontSize: 11, color: AppColors.textMuted),
-                    ),
-                  ]),
-
-                  // Nutrition summary
-                  if (product.nutrition != null) ...[
-                    const SizedBox(height: 20),
-                    const Divider(height: 1, color: AppColors.borderColor),
-                    const SizedBox(height: 16),
+                    // Ingredients section
                     const Text(
-                      'NUTRITION PER 100G',
+                      'INGREDIENTS',
                       style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -252,138 +166,198 @@ class _ResultBody extends StatelessWidget {
                           letterSpacing: 0.5),
                     ),
                     const SizedBox(height: 8),
-                    _NutritionRow(nutrition: product.nutrition!),
+                    ...sr.ingredientResults.map(
+                      (ir) => IngredientChipWidget(result: ir),
+                    ),
+
+                    // Source badge
+                    const SizedBox(height: 12),
+                    SourceBadgeWidget(
+                      source: ScanSource.barcode,
+                      confidencePct: 100,
+                      ingredientCount: sr.ingredientResults.length,
+                    ),
+
+                    // Nutrition (if available)
+                    if (widget.product.nutrition != null) ...[
+                      const SizedBox(height: 20),
+                      const Divider(height: 1, color: AppColors.borderColor),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'NUTRITION PER 100G',
+                        style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textMuted,
+                            letterSpacing: 0.5),
+                      ),
+                      const SizedBox(height: 8),
+                      _NutritionRow(
+                          nutrition: widget.product.nutrition!),
+                    ],
                   ],
-                ],
-              ),
-            ),
-
-            // Action buttons
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
-              child: Row(children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.textMuted,
-                      side: const BorderSide(
-                          color: AppColors.borderColor),
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 13),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(11)),
-                    ),
-                    child: const Text('Scan again'),
-                  ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: scanResult.tier == 0
-                          ? AppColors.brandBlue
-                          : scanResult.tier == 1
-                              ? AppColors.resultRed
-                              : AppColors.resultAmber,
-                      foregroundColor: Colors.white,
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 13),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(11)),
-                    ),
-                    child: Text(
-                      scanResult.tier == 0 ? 'Save to safe list' : 'Do not eat',
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-
-            // Medical disclaimer
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 32),
-              child: Text(
-                'GlutenGuard is not a medical device. '
-                'Always verify with the manufacturer if you have celiac disease or severe gluten sensitivity.',
-                style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textMuted,
-                    height: 1.4),
-                textAlign: TextAlign.center,
               ),
-            ),
-          ],
+
+              // ── Action buttons per spec ─────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                child: _ActionSection(
+                  tier: sr.tier,
+                  saved: _saved,
+                  onSave: _onSave,
+                  onScanAgain: () => Navigator.pop(context),
+                ),
+              ),
+
+              // ── Medical disclaimer — always visible ─────────────────────────
+              const _MedicalDisclaimer(),
+            ],
+          ),
         ),
-      ),
+
+        // ── QuickSaveToast overlay ──────────────────────────────────────────
+        if (_showToast)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: QuickSaveToast(
+              onUndo: _onUndo,
+              onDismissed: _onToastDismissed,
+            ),
+          ),
+      ]),
     );
   }
 }
 
-// ── Ingredient row ────────────────────────────────────────────────────────────
+// ── Action section per verdict ─────────────────────────────────────────────────
 
-class _IngredientRow extends StatelessWidget {
-  final IngredientResult result;
-  const _IngredientRow({required this.result});
+class _ActionSection extends StatelessWidget {
+  final int tier;
+  final bool saved;
+  final VoidCallback onSave;
+  final VoidCallback onScanAgain;
+
+  const _ActionSection({
+    required this.tier,
+    required this.saved,
+    required this.onSave,
+    required this.onScanAgain,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final chipBg = switch (result.tier) {
-      1 => AppColors.redLight,
-      2 => AppColors.amberLight,
-      _ => AppColors.greenLight,
-    };
-    final chipText = switch (result.tier) {
-      1 => AppColors.resultRed,
-      2 => AppColors.resultAmber,
-      _ => AppColors.resultGreen,
-    };
-    final label = switch (result.tier) {
-      1 => 'Gluten',
-      2 => 'Verify',
-      _ => 'Safe',
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: AppColors.surfaceGray, width: 1),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
+    if (tier == 1) {
+      // RED — "Do not eat" label (not a button) + "Scan again"
+      return Column(children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            color: AppColors.redLight,
+            borderRadius: BorderRadius.circular(11),
+            border: Border.all(color: AppColors.resultRed),
+          ),
+          child: const Center(
             child: Text(
-              result.raw,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+              'Do not eat',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.resultRed,
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: chipBg,
-              borderRadius: BorderRadius.circular(9),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: onScanAgain,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.textMuted,
+              side: const BorderSide(color: AppColors.borderColor),
+              padding: const EdgeInsets.symmetric(vertical: 13),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11)),
             ),
-            child: Text(
-              label,
-              style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: chipText),
-            ),
+            child: const Text('Scan again'),
           ),
-        ],
+        ),
+      ]);
+    }
+
+    if (tier == 0) {
+      // GREEN — "Save to Safe List" (blue button) + "Scan another" secondary
+      return Column(children: [
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: saved ? null : onSave,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.brandBlue,
+              disabledBackgroundColor:
+                  AppColors.brandBlue.withValues(alpha: 0.5),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 13),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11)),
+            ),
+            child: Text(saved ? 'Saved ✓' : 'Save to safe list'),
+          ),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: onScanAgain,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.textMuted,
+              side: const BorderSide(color: AppColors.borderColor),
+              padding: const EdgeInsets.symmetric(vertical: 13),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11)),
+            ),
+            child: const Text('Scan another'),
+          ),
+        ),
+      ]);
+    }
+
+    // AMBER — "Contact manufacturer" CTA + "Scan again"
+    return Column(children: [
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {}, // URL launcher wired in P5
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.resultAmber,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11)),
+          ),
+          child: const Text('Contact manufacturer'),
+        ),
       ),
-    );
+      const SizedBox(height: 10),
+      SizedBox(
+        width: double.infinity,
+        child: OutlinedButton(
+          onPressed: onScanAgain,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.textMuted,
+            side: const BorderSide(color: AppColors.borderColor),
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11)),
+          ),
+          child: const Text('Scan again'),
+        ),
+      ),
+    ]);
   }
 }
 
@@ -394,24 +368,40 @@ class _NutritionRow extends StatelessWidget {
   const _NutritionRow({required this.nutrition});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceGray,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        'Calories: ${nutrition.caloriesPer100g?.toStringAsFixed(0) ?? "—"} kcal  '
-        'Protein: ${nutrition.proteinPer100g?.toStringAsFixed(1) ?? "—"}g  '
-        'Fat: ${nutrition.fatPer100g?.toStringAsFixed(1) ?? "—"}g  '
-        'Carbs: ${nutrition.carbsPer100g?.toStringAsFixed(1) ?? "—"}g  '
-        'Na: ${nutrition.sodiumPer100g?.toStringAsFixed(0) ?? "—"}mg',
-        style: const TextStyle(
-            fontSize: 12, color: AppColors.textPrimary),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceGray,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          'Calories: ${nutrition.caloriesPer100g?.toStringAsFixed(0) ?? "—"} kcal  '
+          'Protein: ${nutrition.proteinPer100g?.toStringAsFixed(1) ?? "—"}g  '
+          'Fat: ${nutrition.fatPer100g?.toStringAsFixed(1) ?? "—"}g  '
+          'Carbs: ${nutrition.carbsPer100g?.toStringAsFixed(1) ?? "—"}g  '
+          'Na: ${nutrition.sodiumPer100g?.toStringAsFixed(0) ?? "—"}mg',
+          style: const TextStyle(fontSize: 12, color: AppColors.textPrimary),
+        ),
+      );
+}
+
+// ── Medical disclaimer ────────────────────────────────────────────────────────
+
+class _MedicalDisclaimer extends StatelessWidget {
+  const _MedicalDisclaimer();
+
+  @override
+  Widget build(BuildContext context) => const Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 40),
+        child: Text(
+          'GlutenGuard is not a medical device. '
+          'Always verify with the manufacturer if you have celiac disease '
+          'or severe gluten sensitivity.',
+          style: TextStyle(
+              fontSize: 10, color: AppColors.textMuted, height: 1.4),
+          textAlign: TextAlign.center,
+        ),
+      );
 }
 
 // ── Shared app bar ────────────────────────────────────────────────────────────
@@ -425,8 +415,6 @@ AppBar _appBar(BuildContext context) => AppBar(
       title: const Text(
         'GlutenGuard',
         style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w700),
+            color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
       ),
     );

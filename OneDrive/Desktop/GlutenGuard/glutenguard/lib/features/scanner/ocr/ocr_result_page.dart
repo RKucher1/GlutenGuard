@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/models/scan_result.dart';
+import '../../results/explanation_card_widget.dart';
+import '../../results/ingredient_chip_widget.dart';
+import '../../results/quick_save_toast.dart';
+import '../../results/result_header_widget.dart';
+import '../../results/source_badge_widget.dart';
 
 /// Displays the result of an OCR ingredient-label scan.
-///
-/// Receives a fully-analysed [ScanResult] and the [confidence] score
-/// (0.0–1.0) from [OcrService] so the source badge can show accuracy.
-class OcrResultPage extends StatelessWidget {
+class OcrResultPage extends StatefulWidget {
   final ScanResult scanResult;
   final double confidence; // 0.0–1.0
 
@@ -16,86 +18,123 @@ class OcrResultPage extends StatelessWidget {
     required this.confidence,
   });
 
-  // ── Verdict helpers ──────────────────────────────────────────────────────
+  @override
+  State<OcrResultPage> createState() => _OcrResultPageState();
+}
 
-  Color get _bandBg => switch (scanResult.tier) {
-        1 => AppColors.redLight,
-        2 => AppColors.amberLight,
-        _ => AppColors.greenLight,
-      };
+class _OcrResultPageState extends State<OcrResultPage> {
+  bool _showToast = false;
+  bool _saved = false;
 
-  Color get _accentColor => switch (scanResult.tier) {
-        1 => AppColors.resultRed,
-        2 => AppColors.resultAmber,
-        _ => AppColors.resultGreen,
-      };
+  int get _confidencePct =>
+      (widget.confidence * 100).round().clamp(0, 100);
 
-  String get _verdictIcon => switch (scanResult.tier) {
-        1 => '✕',
-        2 => '?',
-        _ => '✓',
-      };
+  void _onSave() {
+    if (_saved) return;
+    setState(() {
+      _showToast = true;
+      _saved = true;
+    });
+  }
 
-  String get _verdictTitle => switch (scanResult.tier) {
-        1 => 'Contains gluten',
-        2 => 'Uncertain — verify first',
-        _ => 'No gluten detected',
-      };
-
-  int get _confidencePct => (confidence * 100).round().clamp(0, 100);
+  void _onUndo() => setState(() => _saved = false);
+  void _onToastDismissed() => setState(() => _showToast = false);
 
   @override
   Widget build(BuildContext context) {
+    final sr = widget.scanResult;
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _VerdictBand(
-              bandBg: _bandBg,
-              accentColor: _accentColor,
-              icon: _verdictIcon,
-              title: _verdictTitle,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Explanation block — RED results lead with this
-                  if (scanResult.tier == 1)
-                    _ExplanationCard(reason: scanResult.reason),
-
-                  // Ingredient list
-                  const _SectionLabel(text: 'INGREDIENTS'),
-                  const SizedBox(height: 8),
-                  ...scanResult.ingredientResults.map(
-                    (ir) => _IngredientRow(result: ir),
-                  ),
-
-                  // Source badge
-                  const SizedBox(height: 12),
-                  _SourceBadge(
-                    confidencePct: _confidencePct,
-                    ingredientCount: scanResult.ingredientResults.length,
-                  ),
-                ],
+      body: Stack(children: [
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Verdict header ────────────────────────────────────────────
+              ResultHeaderWidget(
+                tier: sr.tier,
+                productName: 'Ingredient label scan',
               ),
-            ),
 
-            // Action buttons
-            _ActionButtons(
-              context: context,
-              tier: scanResult.tier,
-            ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Explanation leads for RED and AMBER
+                    if (sr.tier == 1)
+                      ExplanationCardWidget(reason: sr.reason, tier: 1),
+                    if (sr.tier == 2)
+                      ExplanationCardWidget(reason: sr.reason, tier: 2),
 
-            // Medical disclaimer — always visible
-            const _MedicalDisclaimer(),
-          ],
+                    // Ingredient list
+                    const Text(
+                      'INGREDIENTS',
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textMuted,
+                          letterSpacing: 0.5),
+                    ),
+                    const SizedBox(height: 8),
+                    ...sr.ingredientResults.map(
+                      (ir) => IngredientChipWidget(result: ir),
+                    ),
+
+                    // Source badge — OCR + confidence
+                    const SizedBox(height: 12),
+                    SourceBadgeWidget(
+                      source: ScanSource.ocr,
+                      confidencePct: _confidencePct,
+                      ingredientCount: sr.ingredientResults.length,
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── Action buttons per spec ───────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                child: _OcrActionSection(
+                  tier: sr.tier,
+                  saved: _saved,
+                  onSave: _onSave,
+                  onScanAgain: () => Navigator.of(context).pop(),
+                ),
+              ),
+
+              // ── Medical disclaimer — always visible ───────────────────────
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 40),
+                child: Text(
+                  'GlutenGuard is not a medical device. '
+                  'Always verify with the manufacturer if you have celiac disease '
+                  'or severe gluten sensitivity.',
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: AppColors.textMuted,
+                      height: 1.4),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+
+        // ── QuickSaveToast overlay ────────────────────────────────────────
+        if (_showToast)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: QuickSaveToast(
+              onUndo: _onUndo,
+              onDismissed: _onToastDismissed,
+            ),
+          ),
+      ]),
     );
   }
 
@@ -115,281 +154,128 @@ class OcrResultPage extends StatelessWidget {
       );
 }
 
-// ── Verdict band ──────────────────────────────────────────────────────────────
+// ── Action section (OCR variant) ──────────────────────────────────────────────
 
-class _VerdictBand extends StatelessWidget {
-  final Color bandBg;
-  final Color accentColor;
-  final String icon;
-  final String title;
+class _OcrActionSection extends StatelessWidget {
+  final int tier;
+  final bool saved;
+  final VoidCallback onSave;
+  final VoidCallback onScanAgain;
 
-  const _VerdictBand({
-    required this.bandBg,
-    required this.accentColor,
-    required this.icon,
-    required this.title,
+  const _OcrActionSection({
+    required this.tier,
+    required this.saved,
+    required this.onSave,
+    required this.onScanAgain,
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        color: bandBg,
-        padding:
-            const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-        child: Column(children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: accentColor,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                icon,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: accentColor),
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'Ingredient label scan',
-            style: TextStyle(
-                fontSize: 12, color: AppColors.textMuted),
-          ),
-        ]),
-      );
-}
-
-// ── Explanation card (RED results) ────────────────────────────────────────────
-
-class _ExplanationCard extends StatelessWidget {
-  final String reason;
-  const _ExplanationCard({required this.reason});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.redLight,
-          borderRadius: BorderRadius.circular(8),
-          border: const Border(
-            left: BorderSide(color: AppColors.resultRed, width: 3),
-          ),
-        ),
-        child: Text(
-          reason,
-          style: const TextStyle(
-              fontSize: 13,
-              color: AppColors.resultRed,
-              height: 1.5),
-        ),
-      );
-}
-
-// ── Section label ─────────────────────────────────────────────────────────────
-
-class _SectionLabel extends StatelessWidget {
-  final String text;
-  const _SectionLabel({required this.text});
-
-  @override
-  Widget build(BuildContext context) => Text(
-        text,
-        style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textMuted,
-            letterSpacing: 0.5),
-      );
-}
-
-// ── Ingredient row ────────────────────────────────────────────────────────────
-
-class _IngredientRow extends StatelessWidget {
-  final IngredientResult result;
-  const _IngredientRow({required this.result});
-
-  @override
   Widget build(BuildContext context) {
-    final chipBg = switch (result.tier) {
-      1 => AppColors.redLight,
-      2 => AppColors.amberLight,
-      _ => AppColors.greenLight,
-    };
-    final chipText = switch (result.tier) {
-      1 => AppColors.resultRed,
-      2 => AppColors.resultAmber,
-      _ => AppColors.resultGreen,
-    };
-    final label = switch (result.tier) {
-      1 => 'Gluten',
-      2 => 'Verify',
-      _ => 'Safe',
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 7),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: AppColors.surfaceGray, width: 1),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              result.raw,
-              style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-            decoration: BoxDecoration(
-              color: chipBg,
-              borderRadius: BorderRadius.circular(9),
-            ),
-            child: Text(
-              label,
-              style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: chipText),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Source badge ──────────────────────────────────────────────────────────────
-
-class _SourceBadge extends StatelessWidget {
-  final int confidencePct;
-  final int ingredientCount;
-  const _SourceBadge(
-      {required this.confidencePct, required this.ingredientCount});
-
-  @override
-  Widget build(BuildContext context) => Row(children: [
+    if (tier == 1) {
+      return Column(children: [
         Container(
-          width: 6,
-          height: 6,
-          decoration: const BoxDecoration(
-            color: AppColors.brandBlue,
-            shape: BoxShape.circle,
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            color: AppColors.redLight,
+            borderRadius: BorderRadius.circular(11),
+            border: Border.all(color: AppColors.resultRed),
+          ),
+          child: const Center(
+            child: Text(
+              'Do not eat',
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.resultRed),
+            ),
           ),
         ),
-        const SizedBox(width: 6),
-        Text(
-          'OCR · $ingredientCount ingredients · $confidencePct% confidence',
-          style:
-              const TextStyle(fontSize: 11, color: AppColors.textMuted),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: onScanAgain,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.textMuted,
+              side: const BorderSide(color: AppColors.borderColor),
+              padding: const EdgeInsets.symmetric(vertical: 13),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11)),
+            ),
+            child: const Text('Scan again'),
+          ),
         ),
       ]);
-}
+    }
 
-// ── Action buttons ────────────────────────────────────────────────────────────
-
-class _ActionButtons extends StatelessWidget {
-  final BuildContext context;
-  final int tier;
-  const _ActionButtons({required this.context, required this.tier});
-
-  @override
-  Widget build(BuildContext ctx) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
-        child: Row(children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.textMuted,
-                side: const BorderSide(color: AppColors.borderColor),
-                padding: const EdgeInsets.symmetric(vertical: 13),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(11)),
-              ),
-              child: const Text('Scan again'),
+    if (tier == 0) {
+      return Column(children: [
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: saved ? null : onSave,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.brandBlue,
+              disabledBackgroundColor:
+                  AppColors.brandBlue.withValues(alpha: 0.5),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 13),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11)),
             ),
+            child: Text(saved ? 'Saved ✓' : 'Save to safe list'),
           ),
-          if (tier == 0) ...[
-            const SizedBox(width: 10),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.brandBlue,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 13),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(11)),
-                ),
-                child: const Text('Save to safe list'),
-              ),
-            ),
-          ],
-          if (tier == 1) ...[
-            const SizedBox(width: 10),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 13),
-                decoration: BoxDecoration(
-                  color: AppColors.redLight,
-                  borderRadius: BorderRadius.circular(11),
-                  border: Border.all(color: AppColors.resultRed),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Do not eat',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.resultRed),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ]),
-      );
-}
-
-// ── Medical disclaimer ────────────────────────────────────────────────────────
-
-class _MedicalDisclaimer extends StatelessWidget {
-  const _MedicalDisclaimer();
-
-  @override
-  Widget build(BuildContext context) => const Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 40),
-        child: Text(
-          'GlutenGuard is not a medical device. '
-          'Always verify with the manufacturer if you have celiac disease '
-          'or severe gluten sensitivity.',
-          style: TextStyle(
-              fontSize: 10, color: AppColors.textMuted, height: 1.4),
-          textAlign: TextAlign.center,
         ),
-      );
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: onScanAgain,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.textMuted,
+              side: const BorderSide(color: AppColors.borderColor),
+              padding: const EdgeInsets.symmetric(vertical: 13),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(11)),
+            ),
+            child: const Text('Scan another'),
+          ),
+        ),
+      ]);
+    }
+
+    // AMBER
+    return Column(children: [
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.resultAmber,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11)),
+          ),
+          child: const Text('Contact manufacturer'),
+        ),
+      ),
+      const SizedBox(height: 10),
+      SizedBox(
+        width: double.infinity,
+        child: OutlinedButton(
+          onPressed: onScanAgain,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.textMuted,
+            side: const BorderSide(color: AppColors.borderColor),
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11)),
+          ),
+          child: const Text('Scan again'),
+        ),
+      ),
+    ]);
+  }
 }

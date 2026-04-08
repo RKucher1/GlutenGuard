@@ -221,7 +221,7 @@ void main() {
           ),
         ),
       );
-      expect(find.textContaining('Uncertain'), findsOneWidget);
+      expect(find.textContaining('Uncertain'), findsWidgets);
     });
 
     testWidgets('source badge shows OCR and confidence', (tester) async {

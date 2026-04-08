@@ -35,11 +35,11 @@ GlutenGuard is a cross-platform mobile app for people with celiac disease and gl
 ---
 
 ## Current state
-- Phase: P2/Wk4 session 2 complete
-- Tests passing: 90
-- Last stable commit: P2/Wk4 OCR scanner UI: OcrScannerPage + OcrResultPage wired to OcrService, Ingredients chip wired in BarcodeScannerPage (90 tests)
+- Phase: P3/Wk5 session 1 complete
+- Tests passing: 130
+- Last stable commit: P3/Wk5 result screens: ResultHeaderWidget, ExplanationCardWidget, IngredientChipWidget, SourceBadgeWidget, QuickSaveToast, result_page refactor, ocr_result_page refactor (130 tests)
 - Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev). Run tests with `LD_LIBRARY_PATH=/tmp/sqlitelib /home/rkucher/flutter/bin/flutter test -j 1` (WSL2: use Linux flutter at /home/rkucher/flutter/bin/flutter — Windows flutter at /mnt/c/tools/flutter has CRLF script endings that break in WSL2; sqlite3 symlink needed; -j 1 needed to prevent native-plugin parallel test drop). OcrScannerPage uses image_picker for capture (mobile_scanner v5.2.3 has no captureImage() — live frame OCR upgrade to camera package deferred to P3).
-- Next action: P3/Wk5 — Result screens: RED/AMBER/GREEN full result pages (ResultHeader, ExplanationCard, IngredientChip, SourceBadge, QuickSaveToast)
+- Next action: P4/Wk6 — Safe list + History + Reaction Tracker (SafeListPage, ScanHistoryPage, ReactionLoggerPage)
 - GitHub remote: https://github.com/RKucher1/GlutenGuard
 - Assets built: assets/gluten_knowledge_base.json (T1:8, T2:17, Flagged:6), assets/gluten_products_kb.json (28 patterns, 10 categories), assets/pantry_ingredients.json (199 items)
 - Recipe module spec: GlutenGuard_RecipeModule.docx — AI recipe generation + smart pantry (P5+ feature, Claude API)
