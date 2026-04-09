@@ -42,10 +42,20 @@ class PantryItems extends Table {
   DateTimeColumn get updatedAt => dateTime()();
 }
 
+class ReactionLogs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get productName => text()();
+  TextColumn get barcode => text().nullable()();
+  DateTimeColumn get reactionDate => dateTime()();
+  TextColumn get symptomsJson => text()();  // JSON list of symptom strings
+  IntColumn get severity => integer()();    // 1–5
+  TextColumn get notes => text().nullable()();
+}
+
 // ─── Database ─────────────────────────────────────────────────────────────────
 
 @DriftDatabase(
-  tables: [ScanHistoryItems, SafeListItems, ProductCacheItems, PantryItems],
+  tables: [ScanHistoryItems, SafeListItems, ProductCacheItems, PantryItems, ReactionLogs],
   daos: [ScanHistoryDao, ProductCacheDao],
 )
 class AppDatabase extends _$AppDatabase {
@@ -53,7 +63,17 @@ class AppDatabase extends _$AppDatabase {
       : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) => m.createAll(),
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await m.createTable(reactionLogs);
+          }
+        },
+      );
 }
 
 LazyDatabase _openConnection() {

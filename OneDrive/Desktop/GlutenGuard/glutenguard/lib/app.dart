@@ -5,11 +5,16 @@ import 'features/scanner/barcode/barcode_scanner_page.dart';
 import 'features/safe_list/safe_list_page.dart';
 import 'features/recipes/recipe_home_page.dart';
 import 'features/history/scan_history_page.dart';
+import 'features/history/reaction_logger_page.dart';
 import 'features/settings/settings_page.dart';
 
 final _router = GoRouter(
   initialLocation: '/scan',
   routes: [
+    GoRoute(
+      path: '/reaction',
+      builder: (c, s) => const ReactionLoggerPage(),
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, shell) => AppShell(shell: shell),
       branches: [

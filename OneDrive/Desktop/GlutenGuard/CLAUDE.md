@@ -35,15 +35,15 @@ GlutenGuard is a cross-platform mobile app for people with celiac disease and gl
 ---
 
 ## Current state
-- Phase: P3/Wk5 session 1 complete
-- Tests passing: 130
-- Last stable commit: P3/Wk5 result screens: ResultHeaderWidget, ExplanationCardWidget, IngredientChipWidget, SourceBadgeWidget, QuickSaveToast, result_page refactor, ocr_result_page refactor (130 tests)
+- Phase: P4/Wk6 complete
+- Tests passing: 181
+- Last stable commit: P4/Wk6 safe list + history + reaction tracker (181 tests)
 - Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev). Run tests with `LD_LIBRARY_PATH=/tmp/sqlitelib /home/rkucher/flutter/bin/flutter test -j 1` (WSL2: use Linux flutter at /home/rkucher/flutter/bin/flutter — Windows flutter at /mnt/c/tools/flutter has CRLF script endings that break in WSL2; sqlite3 symlink needed; -j 1 needed to prevent native-plugin parallel test drop). OcrScannerPage uses image_picker for capture (mobile_scanner v5.2.3 has no captureImage() — live frame OCR upgrade to camera package deferred to P3).
-- Next action: P4/Wk6 — Safe list + History + Reaction Tracker (SafeListPage, ScanHistoryPage, ReactionLoggerPage)
+- Next action: P5/Wk7 — Remote KB + Community Flags + Menu Mode
 - GitHub remote: https://github.com/RKucher1/GlutenGuard
 - Assets built: assets/gluten_knowledge_base.json (T1:8, T2:17, Flagged:6), assets/gluten_products_kb.json (28 patterns, 10 categories), assets/pantry_ingredients.json (199 items)
 - Recipe module spec: GlutenGuard_RecipeModule.docx — AI recipe generation + smart pantry (P5+ feature, Claude API)
-- Database: lib/data/database/ — AppDatabase (4 tables), ScanHistoryDao, ProductCacheDao, database_provider.dart (Riverpod providers)
+- Database: lib/data/database/ — AppDatabase (5 tables: ScanHistoryItems, SafeListItems, ProductCacheItems, PantryItems, ReactionLogs), ScanHistoryDao, ProductCacheDao, database_provider.dart (Riverpod providers)
 - Recipe cache DB: Recipes table not yet built — schema planned:
   promptHash (cache key), title, category, ingredientsJson, stepsJson, generatedAt
   Logic: hash request → check DB first → hit Claude API only on cache miss → save result
@@ -592,6 +592,23 @@ class AppColors {
 - Do not compete with their restaurant directory (150k US places) at launch
 - Our menu OCR serves a better in-the-moment use case — scan the actual menu in front of you
 
+## Result screen behavior — exact spec per verdict
+
+**RED:** `AppColors.redLight` bg, `AppColors.resultRed` headline, explanation block FIRST above ingredient list, flagged ingredients highlighted, "Do not eat" label only (not a button), source badge + confidence, no save button.
+
+**GREEN:** `AppColors.greenLight` bg, `AppColors.resultGreen` headline, source + confidence prominent, "Save to Safe List" `AppColors.brandBlue` button with toast, "Scan another" secondary CTA.
+
+**AMBER:** `AppColors.amberLight` bg, `AppColors.resultAmber` headline, community flag is HEADLINE if exists (GFWD source + date), ingredient explanation below, "Contact manufacturer" CTA, no save button.
+
+**All screens:** Medical disclaimer always visible. Source badge shows scan method (OCR/Barcode/Manual) + confidence %.
+
+## Scanner screen spec
+
+Viewfinder: dark bg `#111111`, corner brackets in `AppColors.brandBlue`, animated scan line `Color(0xFF4ADE80)`. Mode pills at top: Barcode / Ingredients / Menu. Brand header above viewfinder: navy rounded square logo mark + "GlutenGuard" wordmark in `AppColors.brandNavy`.
+
+Tab bar: active `AppColors.brandBlue` + `AppColors.blueLight` icon bg, inactive `Color(0xFFB0B3BE)`.
+
+All screens: `AppColors.surfaceGray` background, `AppColors.borderColor` dividers. No hardcoded colors anywhere.
 
 ## Result screen behavior — exact spec per verdict
 
@@ -621,6 +638,109 @@ class AppColors {
 - Source badge shows scan method (OCR / Barcode / Manual) + confidence %
 
 ---
+
+## Full app design spec — all screens
+
+### Global rules
+- All screen backgrounds: `AppColors.surfaceGray` (#F5F6FA)
+- All card/container backgrounds: white (#FFFFFF) with `AppColors.borderColor` border, 12px radius
+- All dividers: `AppColors.borderColor`
+- All primary text: `AppColors.textPrimary`
+- All secondary/timestamp text: `AppColors.textMuted`
+- No hardcoded colors anywhere — always AppColors.*
+- All CTAs/buttons: `AppColors.brandBlue` fill, white text, 12px radius
+- All secondary buttons: white fill, `AppColors.brandBlue` text, `AppColors.brandBlue` border
+- Bottom nav: `AppColors.surfaceGray` bg, top border `AppColors.borderColor`
+
+### Brand header (appears on Scan, Safe List, Recipes, History)
+- Navy rounded square logo mark (8px radius) + white leaf inside
+- "GlutenGuard" wordmark `AppColors.brandNavy`, bold, 17px
+- Subtitle line below in `AppColors.textMuted`, 11px
+- White background, `AppColors.borderColor` bottom border
+
+### Scan screen
+- Header: brand header
+- Mode pills: Barcode / Ingredients / Menu — active pill `AppColors.blueLight` bg + `AppColors.brandBlue` text + border, inactive white bg + `AppColors.textMuted` text
+- Viewfinder: `#111111` bg, 16px radius, corner brackets `AppColors.brandBlue`, animated scan line `Color(0xFF4ADE80)`
+- Below viewfinder: instruction text in `AppColors.textMuted`, centered
+
+### Safe list screen
+- Header: brand header
+- Empty state: centered icon + `AppColors.textMuted` message + `AppColors.brandBlue` "Start Scanning" CTA
+- Product cards: white bg, 12px radius, `AppColors.borderColor` border
+  - Product name: `AppColors.textPrimary` bold
+  - Brand + date saved: `AppColors.textMuted`
+  - GREEN dot left edge on safe products
+  - AMBER dot + amber banner if product has new community flag — `AppColors.amberLight` bg + `AppColors.resultAmber` text
+  - Chevron right in `AppColors.textMuted`
+
+### History screen
+- Header: brand header
+- Scan rows grouped by date — date header in `AppColors.textMuted` uppercase small
+- Each row: color dot left (RED/AMBER/GREEN using result colors), product name `AppColors.textPrimary`, scan method + time `AppColors.textMuted`, chevron right
+- "Log a reaction" floating button: `AppColors.brandBlue`, white icon, bottom right
+
+### Reaction logger
+- White screen, `AppColors.borderColor` section dividers
+- Pre-selected product highlighted in `AppColors.amberLight`
+- Symptom chips: unselected `AppColors.surfaceGray` + `AppColors.textMuted`, selected `AppColors.blueLight` + `AppColors.brandBlue`
+- Privacy note below save button: `AppColors.textMuted` italic — "This data is stored only on your device and will never be shared"
+- Save button: `AppColors.brandBlue` full width
+
+### Recipes screen
+- Header: brand header
+- Category filter chips at top: same pill style as mode pills
+- Recipe cards: white bg, 12px radius, `AppColors.borderColor` border
+  - Recipe image placeholder: `AppColors.surfaceGray` with centered icon
+  - Title: `AppColors.textPrimary` bold
+  - Cook time + servings: `AppColors.textMuted`
+  - GREEN "GF Safe" badge: `AppColors.greenLight` bg + `AppColors.resultGreen` text
+- Pro gate card at bottom of free list: `AppColors.blueLight` bg, `AppColors.brandBlue` lock icon, upgrade CTA
+
+### Recipe detail screen
+- White background
+- Hero image area: `AppColors.surfaceGray` if no image
+- Title: `AppColors.textPrimary` bold 22px
+- Meta row (time/servings): `AppColors.textMuted`
+- Section headers ("Ingredients", "Steps"): `AppColors.textPrimary` bold 15px, `AppColors.borderColor` bottom border
+- Ingredient rows: green checkmark if in pantry, `AppColors.textMuted` dot if not
+- Step numbers: `AppColors.brandBlue` circle, white number
+- "Save to pantry" button: secondary style
+
+### Settings screen
+- Grouped list style — each group has white card bg, `AppColors.borderColor` dividers
+- Group headers: `AppColors.textMuted` uppercase small, `AppColors.surfaceGray` bg
+- Active subscription row: `AppColors.greenLight` bg, `AppColors.resultGreen` "Pro" badge
+- Toggle switches: active `AppColors.brandBlue`
+- Destructive actions (clear history, sign out): `AppColors.resultRed` text
+
+### Paywall screen
+- `AppColors.brandNavy` top section with white logo + headline
+- Feature comparison: white cards, green checkmarks `AppColors.resultGreen` for Pro, grey dash for Free
+- Annual plan card: `AppColors.blueLight` border + "Best Value" `AppColors.brandBlue` badge
+- Monthly plan card: standard white card
+- Lifetime option: smaller secondary link below main CTAs
+- Restore purchases: `AppColors.textMuted` small text at bottom
+
+### Onboarding screens (3 screens)
+- White background throughout
+- Progress dots at top: active `AppColors.brandBlue`, inactive `AppColors.borderColor`
+- Illustration area: `AppColors.blueLight` bg circle with icon
+- Headline: `AppColors.textPrimary` bold 24px centered
+- Body: `AppColors.textMuted` centered 16px
+- Primary CTA: `AppColors.brandBlue` full width, 12px radius
+- Skip: `AppColors.textMuted` small text top right
+
+### Error + empty states (all screens)
+- Centered layout: icon in `AppColors.surfaceGray` circle, headline `AppColors.textPrimary`, body `AppColors.textMuted`, retry CTA `AppColors.brandBlue`
+- Network error icon: `AppColors.resultAmber`
+- Camera permission denied: `AppColors.resultAmber` icon + Settings deep link CTA
+- No results found: `AppColors.textMuted` icon
+
+### Loading states
+- All async ops over 300ms: `AppColors.brandBlue` CircularProgressIndicator
+- Skeleton loaders on list screens: `AppColors.surfaceGray` animated shimmer
+- Full screen blocking loader: white overlay + `AppColors.brandBlue` spinner + `AppColors.textMuted` message below
 
 
 ---

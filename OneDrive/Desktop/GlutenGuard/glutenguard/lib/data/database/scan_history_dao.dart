@@ -3,7 +3,7 @@ import 'app_database.dart';
 
 part 'scan_history_dao.g.dart';
 
-@DriftAccessor(tables: [ScanHistoryItems, SafeListItems])
+@DriftAccessor(tables: [ScanHistoryItems, SafeListItems, ReactionLogs])
 class ScanHistoryDao extends DatabaseAccessor<AppDatabase>
     with _$ScanHistoryDaoMixin {
   ScanHistoryDao(super.db);
@@ -52,4 +52,22 @@ class ScanHistoryDao extends DatabaseAccessor<AppDatabase>
 
   Future<int> removeFromSafeList(String barcode) =>
       (delete(safeListItems)..where((t) => t.barcode.equals(barcode))).go();
+
+  // ─── Reaction Logs ────────────────────────────────────────────────────────────
+
+  Future<List<ReactionLog>> allReactions() =>
+      (select(reactionLogs)
+            ..orderBy([(t) => OrderingTerm.desc(t.reactionDate)]))
+          .get();
+
+  Stream<List<ReactionLog>> watchReactions() =>
+      (select(reactionLogs)
+            ..orderBy([(t) => OrderingTerm.desc(t.reactionDate)]))
+          .watch();
+
+  Future<int> insertReaction(ReactionLogsCompanion entry) =>
+      into(reactionLogs).insert(entry);
+
+  Future<int> deleteReaction(int id) =>
+      (delete(reactionLogs)..where((t) => t.id.equals(id))).go();
 }

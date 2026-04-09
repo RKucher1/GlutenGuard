@@ -1,6 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/database/app_database.dart';
+import '../../data/database/database_provider.dart';
+import '../../data/models/product.dart';
 import '../../data/models/scan_result.dart';
 import '../product_lookup/product_lookup_provider.dart';
 import 'explanation_card_widget.dart';
@@ -40,6 +44,7 @@ class ResultPage extends ConsumerWidget {
           scanResult: data.scanResult!,
         );
       },
+
     );
   }
 }
@@ -98,29 +103,70 @@ class _NotFoundPage extends StatelessWidget {
 
 // ── Result body ───────────────────────────────────────────────────────────────
 
-class _ResultBody extends StatefulWidget {
-  final dynamic product;
+class _ResultBody extends ConsumerStatefulWidget {
+  final Product product;
   final ScanResult scanResult;
 
   const _ResultBody({required this.product, required this.scanResult});
 
   @override
-  State<_ResultBody> createState() => _ResultBodyState();
+  ConsumerState<_ResultBody> createState() => _ResultBodyState();
 }
 
-class _ResultBodyState extends State<_ResultBody> {
+class _ResultBodyState extends ConsumerState<_ResultBody> {
   bool _showToast = false;
   bool _saved = false;
+  bool _historySaved = false;
 
-  void _onSave() {
+  @override
+  void initState() {
+    super.initState();
+    // Auto-save every scan to history on first render.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _autoSaveHistory());
+  }
+
+  Future<void> _autoSaveHistory() async {
+    if (_historySaved) return;
+    _historySaved = true;
+    final dao = ref.read(scanHistoryDaoProvider);
+    final tierLabel = switch (widget.scanResult.tier) {
+      1 => 'RED',
+      2 => 'AMBER',
+      _ => 'GREEN',
+    };
+    final flaggedJson = jsonEncode(widget.scanResult.ingredientResults
+        .where((r) => r.tier > 0)
+        .map((r) => r.raw)
+        .toList());
+    await dao.insertScan(ScanHistoryItemsCompanion.insert(
+      barcode: widget.product.barcode ?? '',
+      productName: widget.product.productName,
+      resultTier: tierLabel,
+      flaggedIngredients: flaggedJson,
+      scannedAt: DateTime.now(),
+    ));
+  }
+
+  Future<void> _onSave() async {
     if (_saved) return;
     setState(() {
       _showToast = true;
       _saved = true;
     });
+    final dao = ref.read(scanHistoryDaoProvider);
+    await dao.addToSafeList(SafeListItemsCompanion.insert(
+      barcode: widget.product.barcode ?? widget.product.productName,
+      productName: widget.product.productName,
+      addedAt: DateTime.now(),
+    ));
   }
 
-  void _onUndo() => setState(() => _saved = false);
+  Future<void> _onUndo() async {
+    setState(() => _saved = false);
+    final dao = ref.read(scanHistoryDaoProvider);
+    await dao.removeFromSafeList(
+        widget.product.barcode ?? widget.product.productName);
+  }
 
   void _onToastDismissed() => setState(() => _showToast = false);
 
@@ -139,8 +185,8 @@ class _ResultBodyState extends State<_ResultBody> {
               // ── Verdict header ──────────────────────────────────────────────
               ResultHeaderWidget(
                 tier: sr.tier,
-                productName: widget.product.productName as String?,
-                brand: widget.product.brand as String?,
+                productName: widget.product.productName,
+                brand: widget.product.brand,
               ),
 
               Padding(
@@ -192,8 +238,7 @@ class _ResultBodyState extends State<_ResultBody> {
                             letterSpacing: 0.5),
                       ),
                       const SizedBox(height: 8),
-                      _NutritionRow(
-                          nutrition: widget.product.nutrition!),
+                      _NutritionRow(nutrition: widget.product.nutrition!),
                     ],
                   ],
                 ),

@@ -81,5 +81,58 @@ void main() {
       expect(items.first.ingredientId, 'p001');
       expect(items.first.isInPantry, isTrue);
     });
+
+    // 6. insert reaction log and retrieve it
+    test('insert and retrieve reaction log', () async {
+      await db.scanHistoryDao.insertReaction(ReactionLogsCompanion.insert(
+        productName: 'Suspicious Bread',
+        reactionDate: DateTime(2024, 5, 10, 14, 30),
+        symptomsJson: '["Bloating","Headache"]',
+        severity: 3,
+      ));
+
+      final reactions = await db.scanHistoryDao.allReactions();
+      expect(reactions.length, 1);
+      expect(reactions.first.productName, 'Suspicious Bread');
+      expect(reactions.first.severity, 3);
+      expect(reactions.first.symptomsJson, '["Bloating","Headache"]');
+    });
+
+    // 7. delete reaction log
+    test('delete reaction log removes it', () async {
+      final id = await db.scanHistoryDao.insertReaction(
+          ReactionLogsCompanion.insert(
+        productName: 'Test Product',
+        reactionDate: DateTime.now(),
+        symptomsJson: '["Nausea"]',
+        severity: 2,
+      ));
+
+      await db.scanHistoryDao.deleteReaction(id);
+      final reactions = await db.scanHistoryDao.allReactions();
+      expect(reactions, isEmpty);
+    });
+
+    // 8. empty reactions returns empty list
+    test('empty reactions returns empty list', () async {
+      final reactions = await db.scanHistoryDao.allReactions();
+      expect(reactions, isEmpty);
+    });
+
+    // 9. reaction notes are nullable
+    test('reaction log stores nullable notes and barcode', () async {
+      await db.scanHistoryDao.insertReaction(ReactionLogsCompanion.insert(
+        productName: 'Test',
+        reactionDate: DateTime.now(),
+        symptomsJson: '["Fatigue"]',
+        severity: 1,
+        notes: const Value(null),
+        barcode: const Value(null),
+      ));
+
+      final reactions = await db.scanHistoryDao.allReactions();
+      expect(reactions.first.notes, isNull);
+      expect(reactions.first.barcode, isNull);
+    });
   });
 }

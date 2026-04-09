@@ -1,6 +1,36 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
+class FlaggedProduct {
+  final String name;
+  final String? brand;
+  final String? upc;
+  final String issue;
+  final String? sourceUrl;
+  final String dateFlagged;
+  final bool isRecall;
+
+  const FlaggedProduct({
+    required this.name,
+    this.brand,
+    this.upc,
+    required this.issue,
+    this.sourceUrl,
+    required this.dateFlagged,
+    this.isRecall = false,
+  });
+
+  factory FlaggedProduct.fromJson(Map<String, dynamic> json) => FlaggedProduct(
+        name: json['name'] as String,
+        brand: json['brand'] as String?,
+        upc: json['upc'] as String?,
+        issue: json['issue'] as String,
+        sourceUrl: json['source_url'] as String?,
+        dateFlagged: json['date_flagged'] as String,
+        isRecall: json['is_recall'] as bool? ?? false,
+      );
+}
+
 class KbIngredient {
   final String name;
   final int tier;
@@ -28,8 +58,13 @@ class KbIngredient {
 class GlutenKnowledgeBase {
   final List<KbIngredient> tier1;
   final List<KbIngredient> tier2;
+  final List<FlaggedProduct> flaggedProducts;
 
-  const GlutenKnowledgeBase({required this.tier1, required this.tier2});
+  const GlutenKnowledgeBase({
+    required this.tier1,
+    required this.tier2,
+    this.flaggedProducts = const [],
+  });
 
   static GlutenKnowledgeBase? _instance;
 
@@ -54,7 +89,10 @@ class GlutenKnowledgeBase {
     final t2 = (json['tier2_ingredients'] as List<dynamic>)
         .map((e) => KbIngredient.fromJson(e as Map<String, dynamic>))
         .toList();
-    return GlutenKnowledgeBase(tier1: t1, tier2: t2);
+    final fp = (json['flagged_products'] as List<dynamic>? ?? [])
+        .map((e) => FlaggedProduct.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return GlutenKnowledgeBase(tier1: t1, tier2: t2, flaggedProducts: fp);
   }
 
   /// Override instance — used in tests.
