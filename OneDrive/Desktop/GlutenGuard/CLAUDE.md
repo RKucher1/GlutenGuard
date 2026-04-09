@@ -35,11 +35,11 @@ GlutenGuard is a cross-platform mobile app for people with celiac disease and gl
 ---
 
 ## Current state
-- Phase: P4/Wk6 complete
-- Tests passing: 181
-- Last stable commit: P4/Wk6 safe list + history + reaction tracker (181 tests)
+- Phase: P5/Wk7 in progress
+- Tests passing: 230
+- Last stable commit: P5/Wk7 menu scanner: MenuScannerPage + MenuHighlightPainter + MenuScannerService (230 tests)
 - Known issues: USDA FSIS API blocked from WSL2 dev environment (HTTP 000). Supabase project not yet created. USDA FDC API key pending (DEMO_KEY in use for dev). Run tests with `LD_LIBRARY_PATH=/tmp/sqlitelib /home/rkucher/flutter/bin/flutter test -j 1` (WSL2: use Linux flutter at /home/rkucher/flutter/bin/flutter — Windows flutter at /mnt/c/tools/flutter has CRLF script endings that break in WSL2; sqlite3 symlink needed; -j 1 needed to prevent native-plugin parallel test drop). OcrScannerPage uses image_picker for capture (mobile_scanner v5.2.3 has no captureImage() — live frame OCR upgrade to camera package deferred to P3).
-- Next action: P5/Wk7 — Remote KB + Community Flags + Menu Mode
+- Next action: P5/Wk7 Session 3 — ProductFlagPage + FlagSyncService (community flags → Supabase POST)
 - GitHub remote: https://github.com/RKucher1/GlutenGuard
 - Assets built: assets/gluten_knowledge_base.json (T1:8, T2:17, Flagged:6), assets/gluten_products_kb.json (28 patterns, 10 categories), assets/pantry_ingredients.json (199 items)
 - Recipe module spec: GlutenGuard_RecipeModule.docx — AI recipe generation + smart pantry (P5+ feature, Claude API)
@@ -85,8 +85,6 @@ GlutenGuard is a cross-platform mobile app for people with celiac disease and gl
 - Stop before `git` ops and destructive DB ops — report and wait for direction
 - If scope changes mid-session, stop and report — do not expand silently
 - End-of-session output only: "X passing, Y failing. [one line summary of what was built]"
-
----
 
 ---
 
@@ -594,24 +592,6 @@ class AppColors {
 
 ## Result screen behavior — exact spec per verdict
 
-**RED:** `AppColors.redLight` bg, `AppColors.resultRed` headline, explanation block FIRST above ingredient list, flagged ingredients highlighted, "Do not eat" label only (not a button), source badge + confidence, no save button.
-
-**GREEN:** `AppColors.greenLight` bg, `AppColors.resultGreen` headline, source + confidence prominent, "Save to Safe List" `AppColors.brandBlue` button with toast, "Scan another" secondary CTA.
-
-**AMBER:** `AppColors.amberLight` bg, `AppColors.resultAmber` headline, community flag is HEADLINE if exists (GFWD source + date), ingredient explanation below, "Contact manufacturer" CTA, no save button.
-
-**All screens:** Medical disclaimer always visible. Source badge shows scan method (OCR/Barcode/Manual) + confidence %.
-
-## Scanner screen spec
-
-Viewfinder: dark bg `#111111`, corner brackets in `AppColors.brandBlue`, animated scan line `Color(0xFF4ADE80)`. Mode pills at top: Barcode / Ingredients / Menu. Brand header above viewfinder: navy rounded square logo mark + "GlutenGuard" wordmark in `AppColors.brandNavy`.
-
-Tab bar: active `AppColors.brandBlue` + `AppColors.blueLight` icon bg, inactive `Color(0xFFB0B3BE)`.
-
-All screens: `AppColors.surfaceGray` background, `AppColors.borderColor` dividers. No hardcoded colors anywhere.
-
-## Result screen behavior — exact spec per verdict
-
 **RED result:**
 - Background `AppColors.redLight` — headline in `AppColors.resultRed`
 - Explanation block ("which ingredient and why") appears FIRST, above the ingredient list
@@ -639,7 +619,178 @@ All screens: `AppColors.surfaceGray` background, `AppColors.borderColor` divider
 
 ---
 
-## Full app design spec — all screens
+## Recipe module — full spec
+
+### What it is
+A full AI-powered recipe system. Not a bolt-on. The pantry is the central
+concept — everything else derives from it. A user who builds their pantry
+is a retained user.
+
+### Screen inventory
+| File | Purpose |
+|---|---|
+| `features/recipes/recipe_home_page.dart` | Tab home — Quick Cook button + curated library |
+| `features/recipes/quick_cook_page.dart` | Select up to 5 pantry items → AI generates instantly |
+| `features/recipes/recipe_builder_page.dart` | Full pantry selection + cooking profile → AI generation |
+| `features/recipes/recipe_detail_page.dart` | Full recipe view, serving scaler, save, start cooking |
+| `features/recipes/cooking_mode_page.dart` | Step-by-step, screen stays on, built-in timers per step |
+| `features/recipes/recipe_library_page.dart` | Browse curated recipes, filter by category/time/flags |
+| `features/pantry/pantry_page.dart` | Manage pantry — add/remove/search/bulk import |
+| `features/pantry/pantry_provider.dart` | Riverpod state, drift persistence |
+| `features/pantry/pantry_quick_start_widget.dart` | Category bulk-add packs |
+| `features/cooking_profile/cooking_profile_page.dart` | One-screen profile setup |
+| `core/recipes/recipe_service.dart` | Claude API calls — system prompt injection |
+| `core/recipes/recipe_safety_checker.dart` | Layer 3 post-generation ingredient check |
+| `core/recipes/recipe_response.dart` | @freezed JSON model |
+| `core/recipes/pantry_item.dart` | @freezed pantry item model |
+
+### Cooking profile — set during onboarding, drives everything
+| Field | Options |
+|---|---|
+| Experience level | New to GF (<1yr) / Experienced (1-3yr) / Pro home cook |
+| Who you cook for | Just me / Me + partner / Family with children / Cooking for someone else with celiac |
+| Dietary flags | Dairy-free, egg-free, nut-free, nightshade-free, low-FODMAP, low-sodium, high-protein, vegan, vegetarian |
+| Cuisine preference | Italian, Asian, Mexican, Mediterranean, American, British, Middle Eastern, No preference |
+| Cook time preference | Under 20 min / Under 45 min / Any |
+
+How it's used:
+- Experience → adjusts explanation depth in AI output (new users get safety notes)
+- Who for → sets default servings, kid-friendliness filter
+- Dietary flags → filters pantry selection list + injected into AI system prompt as hard constraints
+- Cuisine → biases AI generation and curated library surfacing
+- Cook time → filters curated library, sets complexity ceiling for AI
+
+### Pantry UI — not a dropdown, structured as:
+- Quick-start packs: "Add proteins" / "Add vegetables" / "Add GF grains" / "Add condiments" — bulk-add whole categories
+- Search with smart match: type "chick" → chicken breast, chickpeas, chicken stock GF, chicken thighs
+- Recently used items float to top — pantry learns habits
+- Import from safe list: one-tap add scanned safe products to pantry
+- After a GREEN scan: prompt "Add [product] to your pantry?" — this is the key retention loop
+- Ingredient swaps: if recipe calls for rice flour and user has almond flour → suggest substitution
+
+### Quick Cook mode (the daily driver)
+- User taps "Quick Cook" on recipe home
+- App shows their top 10 pantry items, user selects up to 5
+- Tap Generate → Claude returns 3 recipes in under 3 seconds
+- Each recipe: 5 ingredients or fewer, under 30 min, one pan where possible
+- Free: 3 AI generations/day. Pro: unlimited.
+
+### Full mode (dinner party / meal planning)
+- User selects up to 20 pantry items
+- Sets: difficulty (easy/medium/impressive), servings (2/4/6/8+), cuisine, cook time
+- Claude generates complete meal plan: starter + main + side + dessert
+- Shopping list: diffs recipe ingredients vs pantry, shows what to buy
+- Shopping list integrates with scanner — user scans items in store to verify safe before buying
+
+### AI safety architecture — three layers, non-negotiable
+- Layer 1: User selects only from pre-verified GF ingredient list. No free-text entry. The selectable pool IS the safety boundary.
+- Layer 2: System prompt hard-prohibits any ingredient not in injected pantry list. Claude instructed to refuse and regenerate rather than add non-pantry items.
+- Layer 3: Generated recipe output parsed and every ingredient cross-checked against GlutenAnalysisEngine before display. Any Tier 1 or Tier 2 match triggers warning overlay before showing recipe to user.
+
+### Claude API system prompt — exact template
+```dart// recipe_service.dart — inject at runtime:
+// [USER_PANTRY] [EXPERIENCE_LEVEL] [DIETARY_FLAGS] [CUISINE_PREF] [COOK_TIME] [SERVINGS] [MODE]const systemPrompt = """
+You are GlutenGuard's recipe assistant. You help people with celiac disease
+cook safe, delicious gluten-free meals.ABSOLUTE SAFETY RULES — never violate:
+
+Only use ingredients from the user's pantry list. No exceptions.
+Never suggest flour without specifying GF type: rice flour, almond flour,
+coconut flour, tapioca flour, chickpea flour.
+Never suggest soy sauce — use tamari GF or coconut aminos only if in pantry.
+Never suggest breadcrumbs without GF qualifier.
+Never suggest oats without certified GF qualifier.
+Thickeners only: cornstarch, tapioca starch, arrowroot, xanthan gum — and
+only if in the pantry list.
+Never suggest an ingredient not in the pantry as 'to taste'.
+If you cannot make a complete recipe from the pantry, say so and suggest
+the 2-3 additions that would help most.
+USER PROFILE:
+Experience: [EXPERIENCE_LEVEL]
+Dietary flags: [DIETARY_FLAGS]
+Cuisine: [CUISINE_PREF]
+Servings: [SERVINGS]
+Max cook time: [COOK_TIME] minutesPANTRY: [USER_PANTRY — comma-separated verified GF list]OUTPUT: valid JSON only — no preamble, no markdown fences.
+{
+"recipes": [{
+"name": string,
+"cuisine": string,
+"difficulty": "easy"|"medium"|"impressive",
+"prep_minutes": number,
+"cook_minutes": number,
+"servings": number,
+"ingredients": [{"item": string, "amount": string, "unit": string}],
+"steps": [string],
+"substitutions": [{"missing": string, "substitute": string, "note": string}],
+"nutrition_flags": [string],
+"celiac_safety_note": string
+}],
+"pantry_suggestions": [string]
+}QUICK mode: 3 recipes, max 5 ingredients each, max 20 min.
+FULL mode: 2 recipes with full meal plan option.
+MEAL PLAN mode: starter + main + side + dessert as one object.
+For 'new' experience level: explain WHY each ingredient is safe.
+""";
+
+### Recipe cache — drift table (avoids repeat API calls)
+```dartclass RecipeCache extends Table {
+IntColumn get id => integer().autoIncrement()();
+TextColumn get promptHash => text()();    // SHA256 of pantry+profile — cache key
+TextColumn get title => text()();
+TextColumn get category => text()();
+TextColumn get ingredientsJson => text()();
+TextColumn get stepsJson => text()();
+TextColumn get nutritionFlags => text()();
+DateTimeColumn get generatedAt => dateTime()();
+}
+// Logic: hash request → check DB → hit Claude API only on miss → save result
+// Claude API key: flutter_secure_storage, never hardcode. From console.anthropic.com
+
+### Recipe cache — exact logic, non-negotiable
+1. Hash the request: SHA256 of (sorted pantry items + cooking profile fields) = promptHash
+2. Check RecipeCache table for matching promptHash FIRST — if hit, return cached, NO API call
+3. Only on cache miss: call Claude API with system prompt
+4. On API response: run RecipeSafetyChecker (Layer 3) before saving
+5. If safety check passes: save to RecipeCache with promptHash, serve to user
+6. If safety check fails: show warning overlay, do NOT save to cache
+7. Same pantry + same profile = same hash = always serves from cache forever
+8. Cache never expires — recipes are static once generated and verified safe
+9. User can manually "regenerate" which busts cache for that hash only
+
+### Pantry ingredient JSON schema
+```json{
+"name": "chicken breast",
+"categories": ["poultry", "protein"],
+"safety_tier": 0,
+"fodmap_flag": false,
+"fodmap_note": null,
+"dietary_flags": ["dairyFree", "eggFree", "nutFree", "glutenFree"],
+"quick_start_packs": ["proteins"]
+}
+
+### Design spec — recipe screens
+- RecipeHomePage: `AppColors.surfaceGray` bg, brand header, "Quick Cook" card in `AppColors.blueLight` with `AppColors.brandBlue` CTA, curated library below in white cards
+- QuickCookPage: ingredient chips — unselected `AppColors.surfaceGray` + `AppColors.textMuted`, selected `AppColors.blueLight` + `AppColors.brandBlue` border + text, Generate button `AppColors.brandBlue` full width, disabled until ≥1 selected
+- RecipeDetailPage: white bg, title `AppColors.textPrimary` bold 22px, meta row `AppColors.textMuted`, section headers with `AppColors.borderColor` bottom border, step numbers `AppColors.brandBlue` circle white text, ingredient rows green checkmark if in pantry
+- CookingModePage: dark bg `#111111`, white text, step card white with `AppColors.textPrimary`, timer in `AppColors.brandBlue`, "Next step" `AppColors.brandBlue` full width
+- PantryPage: search bar with `AppColors.borderColor` border, quick-start pack chips in `AppColors.blueLight`, ingredient rows white cards with green checkmark when added
+- Pro gate card: `AppColors.blueLight` bg, `AppColors.brandBlue` lock icon, upgrade CTA
+
+### Must-pass recipe tests[ ] RecipeSafetyChecker flags Tier 1 ingredient in AI output before display
+[ ] RecipeSafetyChecker passes clean recipe without false positives
+[ ] Free tier: 4th AI generation same day shows paywall
+[ ] Free tier: new day resets AI generation count
+[ ] Serving scaler: 4 servings → 8 servings doubles all quantities correctly
+[ ] Serving scaler: shows "1/4 tsp" not "0.25 tsp"
+[ ] Pantry quick-start "proteins" pack adds expected items
+[ ] Curated library filter "under 20 min" only shows matching recipes
+[ ] FODMAP mode hides garlic from pantry selection
+[ ] Pantry persists across app restarts
+[ ] Cache hit: same pantry+profile returns cached recipe, no API call
+[ ] Shopping list correctly diffs recipe ingredients vs pantry
+[ ] CookingMode: screen stays on during cooking, turns off on exit
+[ ] Import from safe list correctly maps scanned product to pantry item
+[ ] After GREEN scan: "Add to pantry?" prompt appears
+
 
 ### Global rules
 - All screen backgrounds: `AppColors.surfaceGray` (#F5F6FA)
@@ -663,6 +814,7 @@ All screens: `AppColors.surfaceGray` background, `AppColors.borderColor` divider
 - Mode pills: Barcode / Ingredients / Menu — active pill `AppColors.blueLight` bg + `AppColors.brandBlue` text + border, inactive white bg + `AppColors.textMuted` text
 - Viewfinder: `#111111` bg, 16px radius, corner brackets `AppColors.brandBlue`, animated scan line `Color(0xFF4ADE80)`
 - Below viewfinder: instruction text in `AppColors.textMuted`, centered
+- Tab bar: active `AppColors.brandBlue` + `AppColors.blueLight` icon bg, inactive `Color(0xFFB0B3BE)`
 
 ### Safe list screen
 - Header: brand header
@@ -767,9 +919,5 @@ All screens: `AppColors.surfaceGray` background, `AppColors.borderColor` divider
 
 ---
 
-_Last updated: P0/Wk1 start — Q2 2026_
+_Last updated: P4/Wk6 complete — Q2 2026_
 _Flutter · iOS & Android · Claude Code Workflow_
-
-
-
-- Remaining build scope: P3 result screens → P4 safe list/history → P5 remote KB/community flags/menu → P6 RevenueCat/onboarding → P7 beta/submission
