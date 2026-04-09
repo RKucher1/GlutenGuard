@@ -55,7 +55,7 @@ class _OcrResultPageState extends State<OcrResultPage> {
               // ── Verdict header ────────────────────────────────────────────
               ResultHeaderWidget(
                 tier: sr.tier,
-                productName: 'Ingredient label scan',
+                productName: sr.productName ?? 'Ingredient label scan',
               ),
 
               Padding(

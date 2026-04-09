@@ -7,6 +7,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/analysis/gluten_analysis_engine.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/knowledge_base/gluten_knowledge_base.dart';
+import '../menu/menu_scanner_page.dart';
 import 'ingredient_parser.dart';
 import 'ocr_service.dart';
 import 'ocr_result_page.dart';
@@ -250,6 +251,15 @@ class _OcrScannerPageState extends ConsumerState<OcrScannerPage> {
                 label: 'Ingredients',
                 selected: true,
                 onTap: () {},
+              ),
+              const SizedBox(width: 10),
+              _ModeChip(
+                label: 'Menu',
+                selected: false,
+                onTap: () => Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                      builder: (_) => const MenuScannerPage()),
+                ),
               ),
             ],
           ),

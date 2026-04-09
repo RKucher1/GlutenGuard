@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../product_lookup/product_lookup_provider.dart';
 import '../../results/result_page.dart';
+import '../menu/menu_scanner_page.dart';
 import '../ocr/ocr_scanner_page.dart';
 
 class BarcodeScannerPage extends ConsumerStatefulWidget {
@@ -133,6 +134,16 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const OcrScannerPage(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              _ModeChip(
+                label: 'Menu',
+                selected: false,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const MenuScannerPage(),
                   ),
                 ),
               ),
